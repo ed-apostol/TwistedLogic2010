@@ -31,7 +31,7 @@ void makeNullMove(position_t *pos, undo_t *undo) {
     ASSERT(pos != NULL);
 
     side = pos->side;
-    xside = side^1;
+    xside = side ^ 1;
 
     undo->lastmove = pos->lastmove;
     undo->epsq = pos->epsq;
@@ -60,7 +60,7 @@ void makeNullMove(position_t *pos, undo_t *undo) {
 
 /* this undos the move done */
 void unmakeMove(position_t *pos, undo_t *undo) {
-    uint32 side, xside, m, rook_from=0, rook_to=0, epsq=0, from, to;
+    uint32 side, xside, m, rook_from = 0, rook_to = 0, epsq = 0, from, to;
 
     ASSERT(pos != NULL);
 
@@ -84,7 +84,6 @@ void unmakeMove(position_t *pos, undo_t *undo) {
     pos->mat_summ[BLACK] = undo->mat_summ[BLACK];
     pos->hash = undo->hash;
     pos->phash = undo->phash;
-
 
     from = moveFrom(m);
     to = moveTo(m);
@@ -217,7 +216,7 @@ void unmakeMove(position_t *pos, undo_t *undo) {
 
 /* this updates the position structure from the move being played */
 void makeMove(position_t *pos, undo_t *undo, uint32 m) {
-    uint32 rook_from=0, rook_to=0, epsq=0, prom, from, to, side, xside;
+    uint32 rook_from = 0, rook_to = 0, epsq = 0, prom, from, to, side, xside;
 
     ASSERT(pos != NULL);
     ASSERT(moveIsOk(m));
@@ -225,7 +224,7 @@ void makeMove(position_t *pos, undo_t *undo, uint32 m) {
     from = moveFrom(m);
     to = moveTo(m);
     side = pos->side;
-    xside = side^1;
+    xside = side ^ 1;
 
     undo->lastmove = pos->lastmove;
     undo->epsq = pos->epsq;
@@ -257,8 +256,8 @@ void makeMove(position_t *pos, undo_t *undo, uint32 m) {
         pos->hash ^= ZobPiece[side][PAWN][to];
         pos->phash ^= ZobPiece[side][PAWN][from];
         pos->phash ^= ZobPiece[side][PAWN][to];
-        pos->open[side] += PST(side, PAWN, to, MIDGAME) -  PST(side, PAWN, from, MIDGAME);
-        pos->end[side] += PST(side, PAWN, to, ENDGAME) -  PST(side, PAWN, from, ENDGAME);
+        pos->open[side] += PST(side, PAWN, to, MIDGAME) - PST(side, PAWN, from, MIDGAME);
+        pos->end[side] += PST(side, PAWN, to, ENDGAME) - PST(side, PAWN, from, ENDGAME);
         pos->fifty = 0;
         break;
     case KNIGHT:
@@ -266,32 +265,32 @@ void makeMove(position_t *pos, undo_t *undo, uint32 m) {
         pos->knights ^= (BitMask[from] | BitMask[to]);
         pos->hash ^= ZobPiece[side][KNIGHT][from];
         pos->hash ^= ZobPiece[side][KNIGHT][to];
-        pos->open[side] += PST(side, KNIGHT, to, MIDGAME) -  PST(side, KNIGHT, from, MIDGAME);
-        pos->end[side] += PST(side, KNIGHT, to, ENDGAME) -  PST(side, KNIGHT, from, ENDGAME);
+        pos->open[side] += PST(side, KNIGHT, to, MIDGAME) - PST(side, KNIGHT, from, MIDGAME);
+        pos->end[side] += PST(side, KNIGHT, to, ENDGAME) - PST(side, KNIGHT, from, ENDGAME);
         break;
     case BISHOP:
         pos->pieces[to] = BISHOP;
         pos->bishops ^= (BitMask[from] | BitMask[to]);
         pos->hash ^= ZobPiece[side][BISHOP][from];
         pos->hash ^= ZobPiece[side][BISHOP][to];
-        pos->open[side] += PST(side, BISHOP, to, MIDGAME) -  PST(side, BISHOP, from, MIDGAME);
-        pos->end[side] += PST(side, BISHOP, to, ENDGAME) -  PST(side, BISHOP, from, ENDGAME);
+        pos->open[side] += PST(side, BISHOP, to, MIDGAME) - PST(side, BISHOP, from, MIDGAME);
+        pos->end[side] += PST(side, BISHOP, to, ENDGAME) - PST(side, BISHOP, from, ENDGAME);
         break;
     case ROOK:
         pos->pieces[to] = ROOK;
         pos->rooks ^= (BitMask[from] | BitMask[to]);
         pos->hash ^= ZobPiece[side][ROOK][from];
         pos->hash ^= ZobPiece[side][ROOK][to];
-        pos->open[side] += PST(side, ROOK, to, MIDGAME) -  PST(side, ROOK, from, MIDGAME);
-        pos->end[side] += PST(side, ROOK, to, ENDGAME) -  PST(side, ROOK, from, ENDGAME);
+        pos->open[side] += PST(side, ROOK, to, MIDGAME) - PST(side, ROOK, from, MIDGAME);
+        pos->end[side] += PST(side, ROOK, to, ENDGAME) - PST(side, ROOK, from, ENDGAME);
         break;
     case QUEEN:
         pos->pieces[to] = QUEEN;
         pos->queens ^= (BitMask[from] | BitMask[to]);
         pos->hash ^= ZobPiece[side][QUEEN][from];
         pos->hash ^= ZobPiece[side][QUEEN][to];
-        pos->open[side] += PST(side, QUEEN, to, MIDGAME) -  PST(side, QUEEN, from, MIDGAME);
-        pos->end[side] += PST(side, QUEEN, to, ENDGAME) -  PST(side, QUEEN, from, ENDGAME);
+        pos->open[side] += PST(side, QUEEN, to, MIDGAME) - PST(side, QUEEN, from, MIDGAME);
+        pos->end[side] += PST(side, QUEEN, to, ENDGAME) - PST(side, QUEEN, from, ENDGAME);
         break;
     case KING:
         pos->pieces[to] = KING;
@@ -299,8 +298,8 @@ void makeMove(position_t *pos, undo_t *undo, uint32 m) {
         pos->kings ^= (BitMask[from] | BitMask[to]);
         pos->hash ^= ZobPiece[side][KING][from];
         pos->hash ^= ZobPiece[side][KING][to];
-        pos->open[side] += PST(side, KING, to, MIDGAME) -  PST(side, KING, from, MIDGAME);
-        pos->end[side] += PST(side, KING, to, ENDGAME) -  PST(side, KING, from, ENDGAME);
+        pos->open[side] += PST(side, KING, to, MIDGAME) - PST(side, KING, from, MIDGAME);
+        pos->end[side] += PST(side, KING, to, ENDGAME) - PST(side, KING, from, ENDGAME);
         break;
     case TWOFORWARD:
         pos->pieces[to] = PAWN;
@@ -308,13 +307,14 @@ void makeMove(position_t *pos, undo_t *undo, uint32 m) {
         pos->epsq = (from + to) / 2;
         if (pos->pawns & pos->color[xside] & PawnCaps[pos->epsq][side]) {
             pos->hash ^= ZobEpsq[SQFILE(pos->epsq)];
-        } else pos->epsq = -1;
+        }
+        else pos->epsq = -1;
         pos->hash ^= ZobPiece[side][PAWN][from];
         pos->hash ^= ZobPiece[side][PAWN][to];
         pos->phash ^= ZobPiece[side][PAWN][from];
         pos->phash ^= ZobPiece[side][PAWN][to];
-        pos->open[side] += PST(side, PAWN, to, MIDGAME) -  PST(side, PAWN, from, MIDGAME);
-        pos->end[side] += PST(side, PAWN, to, ENDGAME) -  PST(side, PAWN, from, ENDGAME);
+        pos->open[side] += PST(side, PAWN, to, MIDGAME) - PST(side, PAWN, from, MIDGAME);
+        pos->end[side] += PST(side, PAWN, to, ENDGAME) - PST(side, PAWN, from, ENDGAME);
         pos->fifty = 0;
         break;
     case CASTLE:
@@ -350,17 +350,17 @@ void makeMove(position_t *pos, undo_t *undo, uint32 m) {
         pos->hash ^= ZobPiece[side][KING][to];
         pos->hash ^= ZobPiece[side][ROOK][rook_from];
         pos->hash ^= ZobPiece[side][ROOK][rook_to];
-        pos->open[side] += PST(side, KING, to, MIDGAME) -  PST(side, KING, from, MIDGAME);
-        pos->end[side] += PST(side, KING, to, ENDGAME) -  PST(side, KING, from, ENDGAME);
-        pos->open[side] += PST(side, ROOK, rook_to, MIDGAME) -  PST(side, ROOK, rook_from, MIDGAME);
-        pos->end[side] += PST(side, ROOK, rook_to, ENDGAME) -  PST(side, ROOK, rook_from, ENDGAME);
+        pos->open[side] += PST(side, KING, to, MIDGAME) - PST(side, KING, from, MIDGAME);
+        pos->end[side] += PST(side, KING, to, ENDGAME) - PST(side, KING, from, ENDGAME);
+        pos->open[side] += PST(side, ROOK, rook_to, MIDGAME) - PST(side, ROOK, rook_from, MIDGAME);
+        pos->end[side] += PST(side, ROOK, rook_to, ENDGAME) - PST(side, ROOK, rook_from, ENDGAME);
         break;
     case PROMOTE:
         prom = movePromote(m);
         pos->pawns ^= BitMask[from];
         pos->fifty = 0;
-        pos->open[side] += PST(side, prom, to, MIDGAME) -  PST(side, PAWN, from, MIDGAME);
-        pos->end[side] += PST(side, prom, to, ENDGAME) -  PST(side, PAWN, from, ENDGAME);
+        pos->open[side] += PST(side, prom, to, MIDGAME) - PST(side, PAWN, from, MIDGAME);
+        pos->end[side] += PST(side, prom, to, ENDGAME) - PST(side, PAWN, from, ENDGAME);
         pos->mat_summ[side] -= MatSummValue[PAWN];
         pos->hash ^= ZobPiece[side][PAWN][from];
         pos->phash ^= ZobPiece[side][PAWN][from];
@@ -474,9 +474,9 @@ void makeMove(position_t *pos, undo_t *undo, uint32 m) {
     pos->stack[++pos->sp] = pos->hash;
     pos->side = xside;
 
-    #ifdef DEBUG
+#ifdef DEBUG
     positionIsOk(pos);
-    #endif
+#endif
     ASSERT(evalSymmetryIsOk(pos));
     ASSERT(pawnHashRecalc(pos) == pos->phash);
 }
@@ -642,18 +642,21 @@ void setPosition(position_t *pos, const char *fen) {
     while (*fen != '\0' && !isspace(*fen)) {
         if (*fen == 'K') {
             pos->castle |= WCKS;
-        } else if (*fen == 'Q') {
+        }
+        else if (*fen == 'Q') {
             pos->castle |= WCQS;
-        } else if (*fen == 'k') {
+        }
+        else if (*fen == 'k') {
             pos->castle |= BCKS;
-        } else if (*fen == 'q') {
+        }
+        else if (*fen == 'q') {
             pos->castle |= BCQS;
         }
         fen++;
     }
     while (isspace(*fen)) fen++;
-    if (*fen!='\0') {
-        if (*fen!='-') {
+    if (*fen != '\0') {
+        if (*fen != '-') {
             if (fen[0] >= 'a' && fen[0] <= 'h' && fen[1] >= '1' && fen[1] <= '8')
                 pos->epsq = fen[0] - 'a' + (fen[1] - '1') * 8;
             do {
@@ -684,9 +687,9 @@ void setPosition(position_t *pos, const char *fen) {
     pos->hash ^= ZobCastle[pos->castle];
     pos->stack[pos->sp] = pos->hash;
 
-    #ifdef DEBUG
+#ifdef DEBUG
     positionIsOk(pos);
-    #endif
+#endif
     ASSERT(evalSymmetryIsOk(pos));
 }
 
@@ -705,13 +708,14 @@ char *positionToFEN(const position_t *pos) {
                 if (empty > 0) fen[c++] = (char)empty + '0';
                 fen[c++] = pcstr[pc + (color == WHITE ? 0 : 7)];
                 empty = 0;
-            } else empty++;
+            }
+            else empty++;
         }
         if (empty > 0) fen[c++] = (char)empty + '0';
         fen[c++] = (rank > Rank1) ? '/' : ' ';
     }
 
-    fen[c++] = (pos->side == WHITE)? 'w' : 'b';
+    fen[c++] = (pos->side == WHITE) ? 'w' : 'b';
     fen[c++] = ' ';
 
     if (pos->castle == 0) fen[c++] = '-';
@@ -732,4 +736,3 @@ char *positionToFEN(const position_t *pos) {
     fen[c] = '\0';
     return fen;
 }
-

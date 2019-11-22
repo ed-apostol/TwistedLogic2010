@@ -97,37 +97,36 @@ static const int PawnAttacker = 1;
 static const int PieceAttackedBase = 9;
 
 int scale(int min, int max, int r) {
-    static const int bonus[8] = {0, 0, 0, 13, 34, 77, 128, 0};
+    static const int bonus[8] = { 0, 0, 0, 13, 34, 77, 128, 0 };
 
     ASSERT(rankIsOk(r));
     ASSERT(valueIsOk(min));
     ASSERT(valueIsOk(max));
 
-    return (min + ((max-min)*bonus[r]) / bonus[6]);
+    return (min + ((max - min)*bonus[r]) / bonus[6]);
 }
 
 void evalMotifs(const position_t *pos, eval_info_t *ei) {
-
     ASSERT(pos != NULL);
     ASSERT(ei != NULL);
 
-    if ((pos->kings & pos->color[WHITE] & (B1|C1)) && (pos->rooks & pos->color[WHITE] & (A1|A2|B1)))
+    if ((pos->kings & pos->color[WHITE] & (B1 | C1)) && (pos->rooks & pos->color[WHITE] & (A1 | A2 | B1)))
         ei->mid_score[WHITE] -= BlockedRookPenalty;
-    if ((pos->kings & pos->color[WHITE] & (F1|G1)) && (pos->rooks & pos->color[WHITE] & (H1|H2|G1)))
+    if ((pos->kings & pos->color[WHITE] & (F1 | G1)) && (pos->rooks & pos->color[WHITE] & (H1 | H2 | G1)))
         ei->mid_score[WHITE] -= BlockedRookPenalty;
-    if ((pos->kings & pos->color[BLACK] & (B8|C8)) && (pos->rooks & pos->color[BLACK] & (A8|A7|B8)))
+    if ((pos->kings & pos->color[BLACK] & (B8 | C8)) && (pos->rooks & pos->color[BLACK] & (A8 | A7 | B8)))
         ei->mid_score[BLACK] -= BlockedRookPenalty;
-    if ((pos->kings & pos->color[BLACK] & (F8|G8)) && (pos->rooks & pos->color[BLACK] & (H8|H7|G8)))
+    if ((pos->kings & pos->color[BLACK] & (F8 | G8)) && (pos->rooks & pos->color[BLACK] & (H8 | H7 | G8)))
         ei->mid_score[BLACK] -= BlockedRookPenalty;
 
-    if (((pos->bishops & pos->color[WHITE]) >> 7) & (pos->pawns & pos->color[BLACK] & (B5|B6)))
+    if (((pos->bishops & pos->color[WHITE]) >> 7) & (pos->pawns & pos->color[BLACK] & (B5 | B6)))
         ei->mid_score[WHITE] -= TrappedBishopPenalty;
-    if (((pos->bishops & pos->color[WHITE]) >> 9) & (pos->pawns & pos->color[BLACK] & (G5|G6)))
+    if (((pos->bishops & pos->color[WHITE]) >> 9) & (pos->pawns & pos->color[BLACK] & (G5 | G6)))
         ei->mid_score[WHITE] -= TrappedBishopPenalty;
 
-    if (((pos->bishops & pos->color[BLACK]) << 9) & (pos->pawns & pos->color[WHITE] & (B4|B3)))
+    if (((pos->bishops & pos->color[BLACK]) << 9) & (pos->pawns & pos->color[WHITE] & (B4 | B3)))
         ei->mid_score[BLACK] -= TrappedBishopPenalty;
-    if (((pos->bishops & pos->color[BLACK]) << 7) & (pos->pawns & pos->color[WHITE] & (G4|G3)))
+    if (((pos->bishops & pos->color[BLACK]) << 7) & (pos->pawns & pos->color[WHITE] & (G4 | G3)))
         ei->mid_score[BLACK] -= TrappedBishopPenalty;
 
     if ((pos->pawns & pos->color[WHITE] & D2) && (pos->occupied & D3))
@@ -154,30 +153,30 @@ int computeMaterial(const position_t *pos, eval_info_t *ei) {
     int bp = bitCnt(pos->pawns & pos->color[BLACK]);
 
     int score = 0;
-	ASSERT(pos != NULL);
+    ASSERT(pos != NULL);
     ASSERT(ei != NULL);
 
-    ei->phase = (wb+bb+wn+bn+wq*6+bq*6+wr*3+br*3);
+    ei->phase = (wb + bb + wn + bn + wq * 6 + bq * 6 + wr * 3 + br * 3);
     if (ei->phase > 32) ei->phase = 32;
     ei->phase = ei->phase << 3;
     if (bq != 0 && (br + bb + bn) > 0) ei->phase |= KingAtkPhaseMaskByColor[WHITE];
     if (wq != 0 && (wr + wb + wn) > 0) ei->phase |= KingAtkPhaseMaskByColor[BLACK];
 
-    score += (((wq - bq) * (QueenValueMid1+QueenValueMid2) / 2)
-        + ((wr - br) * (RookValueMid1+RookValueMid2) / 2)
-        + ((wb - bb) * (BishopValueMid1+BishopValueMid2) / 2)
-        + ((wn - bn) * (KnightValueMid1+KnightValueMid2) / 2)
-        + ((wp - bp) * (PawnValueMid1+PawnValueMid2) / 2)
-        + ((wb >= 2) * (BishopPairBonusMid1+BishopPairBonusMid2) / 2)
-        - ((bb >= 2) * (BishopPairBonusMid1+BishopPairBonusMid2) / 2));
+    score += (((wq - bq) * (QueenValueMid1 + QueenValueMid2) / 2)
+        + ((wr - br) * (RookValueMid1 + RookValueMid2) / 2)
+        + ((wb - bb) * (BishopValueMid1 + BishopValueMid2) / 2)
+        + ((wn - bn) * (KnightValueMid1 + KnightValueMid2) / 2)
+        + ((wp - bp) * (PawnValueMid1 + PawnValueMid2) / 2)
+        + ((wb >= 2) * (BishopPairBonusMid1 + BishopPairBonusMid2) / 2)
+        - ((bb >= 2) * (BishopPairBonusMid1 + BishopPairBonusMid2) / 2));
 
-    return ((pos->side==WHITE)?score:-score);
+    return ((pos->side == WHITE) ? score : -score);
 }
 
 void initPawnEvalByColor(const position_t *pos, eval_info_t *ei, int allied) {
-    static const int Shift[] = {9, 7};
+    static const int Shift[] = { 9, 7 };
     uint64 temp64;
-    int enemy = allied^1;
+    int enemy = allied ^ 1;
 
     ei->pawns[allied] = (pos->pawns & pos->color[allied]);
     temp64 = (((*ShiftPtr[allied])(ei->pawns[allied], Shift[allied]) & ~FileABB) | ((*ShiftPtr[allied])(ei->pawns[allied], Shift[enemy]) & ~FileHBB));
@@ -188,12 +187,12 @@ void initPawnEvalByColor(const position_t *pos, eval_info_t *ei, int allied) {
 
 void evalPawnsByColor(const position_t *pos, eval_info_t *ei, int mid_score[], int end_score[], int allied) {
     uint64 open, isolated, backward, doubled, halfpassed, passed, temp64;
-    int count, sq, rank, enemy = allied^1;
+    int count, sq, rank, enemy = allied ^ 1;
 
-    open = ei->pawns[allied] & ~((*FillPtr2[enemy])((*ShiftPtr[enemy])((ei->pawns[allied]|ei->pawns[enemy]), 8)));
+    open = ei->pawns[allied] & ~((*FillPtr2[enemy])((*ShiftPtr[enemy])((ei->pawns[allied] | ei->pawns[enemy]), 8)));
     doubled = ei->pawns[allied] & (*FillPtr[enemy])(ei->pawns[allied]);
     isolated = ei->pawns[allied] & ~((*FillPtr2[enemy])(ei->pawnattacks[allied]));
-    backward = ((*ShiftPtr[enemy])(((*ShiftPtr[allied])(ei->pawns[allied], 8) & (ei->pawnattacks[enemy]|ei->pawns[enemy])
+    backward = ((*ShiftPtr[enemy])(((*ShiftPtr[allied])(ei->pawns[allied], 8) & (ei->pawnattacks[enemy] | ei->pawns[enemy])
         & ~ei->pawnattacks[allied]), 8)) & ~isolated;
     passed = open & ~ei->pawnattacks[enemy];
     temp64 = ei->pawns[allied] & open & ~passed;
@@ -201,9 +200,9 @@ void evalPawnsByColor(const position_t *pos, eval_info_t *ei, int mid_score[], i
     while (temp64) {
         sq = popFirstBit(&temp64);
         if (bitCnt((*FillPtr2[allied])(PawnCaps[sq][allied]) & ei->pawns[enemy])
-                <= bitCnt((*FillPtr2[enemy])(PawnCaps[sq + PAWN_MOVE_INC(allied)][enemy]) & ei->pawns[allied]) &&
-                bitCnt(PawnCaps[sq][allied] & ei->pawns[enemy])
-                <= bitCnt(PawnCaps[sq][enemy] & ei->pawns[allied]))
+            <= bitCnt((*FillPtr2[enemy])(PawnCaps[sq + PAWN_MOVE_INC(allied)][enemy]) & ei->pawns[allied]) &&
+            bitCnt(PawnCaps[sq][allied] & ei->pawns[enemy])
+            <= bitCnt(PawnCaps[sq][enemy] & ei->pawns[allied]))
             halfpassed |= BitMask[sq];
     }
 
@@ -249,7 +248,7 @@ void evalPawnsByColor(const position_t *pos, eval_info_t *ei, int mid_score[], i
 
 void evalPieces(const position_t *pos, eval_info_t *ei, int allied) {
     uint64 pc_bits, temp64, weak_sq_mask, enemy_pawn_attacks, enemy_knights, enemy_bishops, enemy_rooks, enemy_queens;
-    int from, temp1, enemy = allied^1;
+    int from, temp1, enemy = allied ^ 1;
 
     ASSERT(pos != NULL);
     ASSERT(ei != NULL);
@@ -270,7 +269,7 @@ void evalPieces(const position_t *pos, eval_info_t *ei, int allied) {
         temp1 = bitCnt(temp64 & ~pos->color[allied] & ~enemy_pawn_attacks);
         ei->mid_score[allied] += temp1 * MidgameKnightMob;
         ei->end_score[allied] += temp1 * EndgameKnightMob;
-        if (temp64 & ei->kingzone[enemy]) ei->atkcntpcs[enemy] += (1<<20) + bitCnt(temp64 & ei->kingadj[enemy]) + (KnightAttackValue<<10);
+        if (temp64 & ei->kingzone[enemy]) ei->atkcntpcs[enemy] += (1 << 20) + bitCnt(temp64 & ei->kingadj[enemy]) + (KnightAttackValue << 10);
         temp1 = 0;
         if (temp64 & enemy_queens) temp1 += (PieceAttackedBase * QueenAttacked) - KnightAttacker;
         if (temp64 & enemy_rooks) temp1 += (PieceAttackedBase * RookAttacked) - KnightAttacker;
@@ -282,14 +281,14 @@ void evalPieces(const position_t *pos, eval_info_t *ei, int allied) {
             temp1 = PST(allied, KNIGHT, from, MIDGAME) / 2;
             if (BitMask[from] & ei->atkpawns[allied]) {
                 if (!(pos->knights & pos->color[enemy]) && !((BitMask[from] & WhiteSquaresBB) ?
-                (pos->bishops & pos->color[enemy] & WhiteSquaresBB) : (pos->bishops & pos->color[enemy] & BlackSquaresBB)))
+                    (pos->bishops & pos->color[enemy] & WhiteSquaresBB) : (pos->bishops & pos->color[enemy] & BlackSquaresBB)))
                     temp1 *= 3;
                 else temp1 *= 2;
             }
             ei->mid_score[allied] += temp1;
         }
     }
-    pc_bits = pos->bishops & pos->color[allied] ;
+    pc_bits = pos->bishops & pos->color[allied];
     while (pc_bits) {
         from = popFirstBit(&pc_bits);
         temp64 = bishopAttacksBB(from, pos->occupied);
@@ -297,7 +296,7 @@ void evalPieces(const position_t *pos, eval_info_t *ei, int allied) {
         temp1 = bitCnt(temp64 & ~pos->color[allied] & ~enemy_pawn_attacks);
         ei->mid_score[allied] += temp1 * MidgameBishopMob;
         ei->end_score[allied] += temp1 * EndgameBishopMob;
-        if (temp64 & ei->kingzone[enemy]) ei->atkcntpcs[enemy] += (1<<20) + bitCnt(temp64 & ei->kingadj[enemy]) + (BishopAttackValue<<10);
+        if (temp64 & ei->kingzone[enemy]) ei->atkcntpcs[enemy] += (1 << 20) + bitCnt(temp64 & ei->kingadj[enemy]) + (BishopAttackValue << 10);
         temp1 = 0;
         if (temp64 & enemy_queens) temp1 += (PieceAttackedBase * QueenAttacked) - BishopAttacker;
         if (temp64 & enemy_rooks) temp1 += (PieceAttackedBase * RookAttacked) - BishopAttacker;
@@ -309,7 +308,7 @@ void evalPieces(const position_t *pos, eval_info_t *ei, int allied) {
             temp1 = PST(allied, KNIGHT, from, MIDGAME) / 3;
             if (BitMask[from] & ei->atkpawns[allied]) {
                 if (!(pos->knights & pos->color[enemy]) && !((BitMask[from] & WhiteSquaresBB) ?
-                (pos->bishops & pos->color[enemy] & WhiteSquaresBB) : (pos->bishops & pos->color[enemy] & BlackSquaresBB)))
+                    (pos->bishops & pos->color[enemy] & WhiteSquaresBB) : (pos->bishops & pos->color[enemy] & BlackSquaresBB)))
                     temp1 *= 3;
                 else temp1 *= 2;
             }
@@ -324,7 +323,7 @@ void evalPieces(const position_t *pos, eval_info_t *ei, int allied) {
         temp1 = bitCnt(temp64 & ~pos->color[allied] & ~enemy_pawn_attacks);
         ei->mid_score[allied] += temp1 * MidgameRookMob;
         ei->end_score[allied] += temp1 * EndgameRookMob;
-        if (temp64 & ei->kingzone[enemy]) ei->atkcntpcs[enemy] += (1<<20) + bitCnt(temp64 & ei->kingadj[enemy]) + (RookAttackValue<<10);
+        if (temp64 & ei->kingzone[enemy]) ei->atkcntpcs[enemy] += (1 << 20) + bitCnt(temp64 & ei->kingadj[enemy]) + (RookAttackValue << 10);
         temp1 = 0;
         if (temp64 & enemy_queens) temp1 += (PieceAttackedBase * QueenAttacked) - RookAttacker;
         if (temp64 & enemy_bishops & ~enemy_pawn_attacks) temp1 += (PieceAttackedBase * BishopAttacked) - RookAttacker;
@@ -362,7 +361,7 @@ void evalPieces(const position_t *pos, eval_info_t *ei, int allied) {
         temp1 = bitCnt(temp64 & ~pos->color[allied] & ~enemy_pawn_attacks);
         ei->mid_score[allied] += temp1 * MidgameQueenMob;
         ei->end_score[allied] += temp1 * EndgameQueenMob;
-        if (temp64 & ei->kingzone[enemy]) ei->atkcntpcs[enemy] += (1<<20) + bitCnt(temp64 & ei->kingadj[enemy]) + (QueenAttackValue<<10);
+        if (temp64 & ei->kingzone[enemy]) ei->atkcntpcs[enemy] += (1 << 20) + bitCnt(temp64 & ei->kingadj[enemy]) + (QueenAttackValue << 10);
         temp1 = 0;
         if (BitMask[from] & enemy_pawn_attacks) temp1 -= (PieceAttackedBase * QueenAttacked) - PawnAttacker;
         ei->mid_score[allied] += temp1 * pos->uci_options->pc_atks_mid_mul;
@@ -377,10 +376,10 @@ void evalPieces(const position_t *pos, eval_info_t *ei, int allied) {
 }
 
 void evalKingAttacks(const position_t *pos, eval_info_t *ei, int allied) {
-    static const int KingSideCastleMask[2] = {WCKS, BCKS};
-    static const int QueenSideCastleMask[2] = {WCQS, BCQS};
+    static const int KingSideCastleMask[2] = { WCKS, BCKS };
+    static const int QueenSideCastleMask[2] = { WCQS, BCQS };
     uint64 pc_atkrs_mask, pc_atkhelpersmask, king_atkmask, pc_defenders_mask;
-    int penalty, best_shieldval, curr_shieldval, tot_atkrs, pc_weights, kzone_atkcnt, enemy = allied^1;
+    int penalty, best_shieldval, curr_shieldval, tot_atkrs, pc_weights, kzone_atkcnt, enemy = allied ^ 1;
 
     ASSERT(pos != NULL);
     ASSERT(ei != NULL);
@@ -440,12 +439,12 @@ int kingPasser(const position_t *pos, int square, int allied) {
     file = SQFILE(square);
     promotion = PAWN_PROMOTE(square, allied);
     if (DISTANCE(king, promotion) <= 1 && DISTANCE(king, square) == 1
-    && ((SQFILE(king) != file) || (file != FileA && file != FileH))) return TRUE;
+        && ((SQFILE(king) != file) || (file != FileA && file != FileH))) return TRUE;
     return FALSE;
 }
 
 int unstoppablePasser(const position_t *pos, int square, int allied) {
-    int oppking, dist, promotion, enemy = allied^1;
+    int oppking, dist, promotion, enemy = allied ^ 1;
 
     ASSERT(colorIsOk(allied));
     ASSERT(squareIsOk(square));
@@ -455,14 +454,14 @@ int unstoppablePasser(const position_t *pos, int square, int allied) {
     oppking = pos->kpos[enemy];
     promotion = PAWN_PROMOTE(square, allied);
     dist = DISTANCE(square, promotion);
-    if (allied == (pos->side^1)) dist++;
+    if (allied == (pos->side ^ 1)) dist++;
     if (DISTANCE(oppking, promotion) > dist) return TRUE;
     return FALSE;
 }
 
 void evalPassedPawns(const position_t *pos, eval_info_t *ei, int allied) {
     uint64 passedpawn_mask;
-    int from, rank, score, enemy = allied^1;
+    int from, rank, score, enemy = allied ^ 1;
 
     ASSERT(pos != NULL);
     ASSERT(ei != NULL);
@@ -479,14 +478,16 @@ void evalPassedPawns(const position_t *pos, eval_info_t *ei, int allied) {
         score -= DISTANCE((from + PAWN_MOVE_INC(allied)), pos->kpos[allied]) * PassedPawnAttackerDistance;
         if (!(pos->color[enemy] & ~pos->pawns & ~pos->kings) && (unstoppablePasser(pos, from, allied) || kingPasser(pos, from, allied))) {
             score += UnstoppablePassedPawn;
-        } else {
+        }
+        else {
             uint64 prom_path = (*FillPtr[allied])(BitMask[from]);
             uint64 path_attkd = prom_path & ei->atkall[enemy];
             uint64 path_dfndd = prom_path & ei->atkall[allied];
             if ((prom_path & pos->color[enemy]) == EmptyBoardBB) {
                 if (path_attkd == EmptyBoardBB) score += (prom_path == path_dfndd) ? PathFreeNotAttackedDefAllPasser : PathFreeNotAttackedDefPasser;
                 else score += ((path_attkd & path_dfndd) == path_attkd) ? PathFreeAttackedDefAllPasser : PathFreeAttackedDefPasser;
-            } else if (((path_attkd | (prom_path & pos->color[enemy])) & ~path_dfndd) == EmptyBoardBB) score += PathNotFreeAttackedDefPasser;
+            }
+            else if (((path_attkd | (prom_path & pos->color[enemy])) & ~path_dfndd) == EmptyBoardBB) score += PathNotFreeAttackedDefPasser;
             if ((prom_path & pos->color[allied]) == EmptyBoardBB) score += PathFreeFriendPasser;
         }
         if (ei->atkpawns[allied] & BitMask[from]) score += DefendedByPawnPasser;
@@ -497,7 +498,6 @@ void evalPassedPawns(const position_t *pos, eval_info_t *ei, int allied) {
 
 // TODO: debug pawn hash value
 void evalPawns(const position_t *pos, eval_info_t *ei) {
-
     ASSERT(pos != NULL);
     ASSERT(ei != NULL);
 
@@ -513,8 +513,8 @@ void evalPawns(const position_t *pos, eval_info_t *ei) {
     else
 #endif
     {
-        int midpawnscore[2] = {0, 0};
-        int endpawnscore[2] = {0, 0};
+        int midpawnscore[2] = { 0, 0 };
+        int endpawnscore[2] = { 0, 0 };
         ei->pawn_entry->passedbits = 0;
         evalPawnsByColor(pos, ei, midpawnscore, endpawnscore, WHITE);
         evalPawnsByColor(pos, ei, midpawnscore, endpawnscore, BLACK);
@@ -549,9 +549,10 @@ int eval(const position_t *pos) {
     mat_idx_black = pos->mat_summ[BLACK];
     if (mat_idx_white < MAX_MATERIAL && mat_idx_black < MAX_MATERIAL) {
         mat = &MaterialTable[mat_idx_white][mat_idx_black];
-        score = ((pos->side==WHITE)?mat->value:-mat->value);
+        score = ((pos->side == WHITE) ? mat->value : -mat->value);
         ei.phase = mat->flags;
-    } else score = computeMaterial(pos, &ei);
+    }
+    else score = computeMaterial(pos, &ei);
 
     ei.mid_score[WHITE] = pos->open[WHITE];
     ei.mid_score[BLACK] = pos->open[BLACK];
@@ -580,10 +581,10 @@ int eval(const position_t *pos) {
     evalPassedPawns(pos, &ei, WHITE);
     evalPassedPawns(pos, &ei, BLACK);
 
-	ASSERT(pos->side == WHITE || pos->side == BLACK);
+    ASSERT(pos->side == WHITE || pos->side == BLACK);
 
-    open = ei.mid_score[pos->side] - ei.mid_score[pos->side^1];
-    end = ei.end_score[pos->side] - ei.end_score[pos->side^1];
+    open = ei.mid_score[pos->side] - ei.mid_score[pos->side ^ 1];
+    end = ei.end_score[pos->side] - ei.end_score[pos->side ^ 1];
 
     if (ei.phase & 1) {
         if ((pos->bishops & WhiteSquaresBB) && (pos->bishops & BlackSquaresBB)) open = open / 2;

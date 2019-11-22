@@ -8,13 +8,13 @@
 
 /* some basic definitions */
 #ifndef INLINE
-   #ifdef _MSC_VER
-      #define INLINE __forceinline
-   #elif defined(__GNUC__)
-      #define INLINE __inline__ __attribute__((always_inline))
-   #else
-      #define INLINE inline
-   #endif
+#ifdef _MSC_VER
+#define INLINE __forceinline
+#elif defined(__GNUC__)
+#define INLINE __inline__ __attribute__((always_inline))
+#else
+#define INLINE inline
+#endif
 #endif
 
 #ifndef _MSC_VER
@@ -39,13 +39,13 @@ typedef unsigned __int64	uint64;
 #endif
 
 /* the move structure */
-typedef struct move_t{
+typedef struct move_t {
     uint32 m;
     int32 s;
 }move_t;
 
 /* the book entry type */
-typedef struct book_entry_t{
+typedef struct book_entry_t {
     uint64 key;
     uint16 move;
     uint16 weight;
@@ -53,13 +53,13 @@ typedef struct book_entry_t{
 }book_entry_t;
 
 /* the book type */
-typedef struct book_t{
+typedef struct book_t {
     FILE *bookfile;
     int64 size;
 }book_t;
 
 /* the pawn hash table entry type */
-typedef struct pawn_entry_t{
+typedef struct pawn_entry_t {
     uint64 passedbits;
     uint32 hashlock;
     int32 opn;
@@ -69,14 +69,14 @@ typedef struct pawn_entry_t{
 }pawn_entry_t;
 
 /* the pawn hash table type */
-typedef struct pawntable_t{
+typedef struct pawntable_t {
     pawn_entry_t *table;
     int64 size;
     uint64 mask;
 }pawntable_t;
 
 /* the trans table entry type */
-typedef struct trans_entry_t{
+typedef struct trans_entry_t {
     uint32 hashlock;
     uint32 data;
     int16 maxvalue;
@@ -88,7 +88,7 @@ typedef struct trans_entry_t{
 }trans_entry_t;
 
 /* the trans table type */
-typedef struct transtable_t{
+typedef struct transtable_t {
     trans_entry_t *table;
     int64 size;
     uint64 mask;
@@ -97,7 +97,7 @@ typedef struct transtable_t{
     int32 age[DATESIZE];
 }transtable_t;
 
-typedef struct uci_option_t{
+typedef struct uci_option_t {
     int32 try_hash;
     int32 try_book;
     int32 book_limit;
@@ -127,7 +127,7 @@ typedef struct uci_option_t{
 }uci_option_t;
 
 /* the undo structure */
-typedef struct undo_t{
+typedef struct undo_t {
     uint32 lastmove;
     uint32 castle;
     uint32 fifty;
@@ -140,7 +140,7 @@ typedef struct undo_t{
 }undo_t;
 
 /* the eval info structure */
-typedef struct eval_info_t{
+typedef struct eval_info_t {
     uint64 atkall[2];
     uint64 atkpawns[2];
     uint64 atkknights[2];
@@ -160,7 +160,7 @@ typedef struct eval_info_t{
 }eval_info_t;
 
 /* the position structure */
-typedef struct position_t{
+typedef struct position_t {
     uint64 pawns;
     uint64 knights;
     uint64 bishops;
@@ -191,13 +191,13 @@ typedef struct position_t{
 }position_t;
 
 /* the material info structure */
-typedef struct material_info_t{
+typedef struct material_info_t {
     int16 value;
     uint16 flags;
 }material_info_t;
 
 /* the search data structure */
-typedef struct search_info_t{
+typedef struct search_info_t {
     int32 thinking_status;
     int32 depth_is_limited;
     int32 depth_limit;
@@ -241,7 +241,7 @@ typedef struct search_info_t{
 }search_info_t;
 
 /* uci options data structure */
-typedef struct option_t{
+typedef struct option_t {
     const char show;
     const char * var;
     const char * init;
@@ -283,7 +283,7 @@ enum movegen_phases {
 };
 
 /* the structure used in generating moves */
-typedef struct sort_t{
+typedef struct sort_t {
     uint32 phase;
     uint32 transmove;
     uint32 killer1;
@@ -297,7 +297,7 @@ typedef struct sort_t{
     uint64 pinned;
     uint64 target;
     move_t list[MAXMOVES];
-    move_t bad[MAXMOVES/2];
+    move_t bad[MAXMOVES / 2];
 }sort_t;
 
 //#  ifndef _MSC_VER
@@ -338,4 +338,3 @@ typedef struct sort_t{
 //  volatile bool work_is_waiting;
 //  volatile bool print_currline;
 //};
-

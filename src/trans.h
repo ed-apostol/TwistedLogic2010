@@ -85,7 +85,7 @@ void initTrans(position_t *pos, uint32 target) {
 
     pos->trans_table.size = size + 3;
     pos->trans_table.mask = size - 1;
-    pos->trans_table.table = (trans_entry_t*) malloc(pos->trans_table.size * sizeof(trans_entry_t));
+    pos->trans_table.table = (trans_entry_t*)malloc(pos->trans_table.size * sizeof(trans_entry_t));
 
     if (pos->trans_table.table == NULL) {
         Print(3, "info string Not enough memory to allocate transposition table.\n");
@@ -109,7 +109,6 @@ trans_entry_t *transProbe(position_t *pos) {
 }
 
 void transStore(position_t *pos, uint32 bm, int d, int min, int max, int mt) {
-
     int worst = -INF, t, score;
     trans_entry_t *replace, *entry;
 
@@ -156,9 +155,9 @@ void transStore(position_t *pos, uint32 bm, int d, int min, int max, int mt) {
 }
 
 void transNewDate(position_t *pos, int date) {
-    pos->trans_table.date = (date+1)%DATESIZE;
+    pos->trans_table.date = (date + 1) % DATESIZE;
     for (date = 0; date < DATESIZE; date++) {
-        pos->trans_table.age[date] = pos->trans_table.date - date + ((pos->trans_table.date < date) ? DATESIZE:0);
+        pos->trans_table.age[date] = pos->trans_table.date - date + ((pos->trans_table.date < date) ? DATESIZE : 0);
     }
     pos->trans_table.used = 1;
 }
@@ -188,7 +187,7 @@ void initPawnTab(position_t *pos, int size) {
 
     pos->pawn_table.size = (uint64)1 << size;
     pos->pawn_table.mask = pos->pawn_table.size - 1;
-    pos->pawn_table.table = (pawn_entry_t*) malloc(pos->pawn_table.size * sizeof(pawn_entry_t));
+    pos->pawn_table.table = (pawn_entry_t*)malloc(pos->pawn_table.size * sizeof(pawn_entry_t));
     if (pos->pawn_table.table == NULL) {
         Print(3, "info string Not enough memory to allocate pawn table.\n");
         quit(pos);

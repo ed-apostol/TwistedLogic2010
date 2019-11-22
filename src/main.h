@@ -59,27 +59,37 @@ int main(void) {
         if (strncasecmp(command, "ucinewgame", 10) == 0) {
             transClear(&pos);
             pawnTabClear(&pos);
-        } else if (strncasecmp(command, "uci", 3) == 0) {
+        }
+        else if (strncasecmp(command, "uci", 3) == 0) {
             uciStart();
-        } else if (strncasecmp(command, "debug", 5) == 0) {
+        }
+        else if (strncasecmp(command, "debug", 5) == 0) {
             /* dummy */
-        } else if (strncasecmp(command, "isready", 7) == 0) {
+        }
+        else if (strncasecmp(command, "isready", 7) == 0) {
             Print(3, "readyok\n");
-        } else if (strncasecmp(command, "position", 8) == 0) {
+        }
+        else if (strncasecmp(command, "position", 8) == 0) {
             uciSetPosition(&pos, command + 9);
-        } else if (strncasecmp(command, "go", 2) == 0) {
+        }
+        else if (strncasecmp(command, "go", 2) == 0) {
             uciGo(&pos, command + 3);
-        } else if (strncasecmp(command, "setoption", 9) == 0) {
+        }
+        else if (strncasecmp(command, "setoption", 9) == 0) {
             uciSetOption(&pos, command);
-        } else if (strncasecmp(command, "testloop", 8) == 0) {
-            #ifdef DEBUG
+        }
+        else if (strncasecmp(command, "testloop", 8) == 0) {
+#ifdef DEBUG
             nonUCI(&pos);
-            #endif
-        } else if (strncasecmp(command, "stop", 4) == 0) {
+#endif
+        }
+        else if (strncasecmp(command, "stop", 4) == 0) {
             /* no op */
-        } else if (strncasecmp(command, "quit", 4) == 0) {
+        }
+        else if (strncasecmp(command, "quit", 4) == 0) {
             break;
-        } else Print(3, "info string Unknown UCI command.\n");
+        }
+        else Print(3, "info string Unknown UCI command.\n");
     }
     quit(&pos);
 }

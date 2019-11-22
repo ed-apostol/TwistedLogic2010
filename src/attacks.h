@@ -7,12 +7,12 @@
 /**************************************************/
 
 int key000(uint64 b, int f) {
-    return (int) ((b >> (f & 56)) & 0x7E);
+    return (int)((b >> (f & 56)) & 0x7E);
 }
 
 #ifdef VERSION64BIT
 int key090(uint64 b, int f) {
-    uint64 _b = (b >> (f&7)) & 0x0101010101010101LL;
+    uint64 _b = (b >> (f & 7)) & 0x0101010101010101LL;
     _b = _b * 0x0080402010080400LL;
     return (int)(_b >> 57);
 }
@@ -24,7 +24,7 @@ int keyDiag(uint64 _b) {
 #else
 int key090(uint64 b, int f) {
     int h;
-    b = b >> (f&7);
+    b = b >> (f & 7);
     h = (int)((b & 0x1010101) | ((b >> 31) & 0x2020202));
     h = (h & 0x303) | ((h >> 14) & 0xC0C);
     return (h & 0xE) | ((h >> 4) & 0x70);
@@ -33,7 +33,7 @@ int key090(uint64 b, int f) {
 int keyDiag(uint64 _b) {
     int h = (int)(_b | _b >> 32);
     h |= h >> 16;
-    h |= h >>  8;
+    h |= h >> 8;
     return h & 0x7E;
 }
 #endif
@@ -61,7 +61,7 @@ uint64 _occ_free_board(int bc, int del, uint64 free) {
     return perm;
 }
 
-void _init_rays(uint64* rays, uint64 (*rayFunc) (int, uint64, int), int (*key)(uint64, int)) {
+void _init_rays(uint64* rays, uint64(*rayFunc) (int, uint64, int), int(*key)(uint64, int)) {
     int i, f, iperm, bc, index;
     uint64 board, mmask, occ, move, xray;
     for (f = 0; f < 64; f++) {
@@ -86,32 +86,32 @@ void setBit(int f, uint64 *b) {
 uint64 _rook0(int f, uint64 board, int t) {
     uint64 free = 0LL, occ = 0LL, xray = 0LL;
     int i, b;
-    for (b = 0, i = f+1; i < 64 && i%8 != 0; i++) RAYMACRO
-        for (b = 0, i = f-1; i >= 0 && i%8 != 7; i--) RAYMACRO
+    for (b = 0, i = f + 1; i < 64 && i % 8 != 0; i++) RAYMACRO
+        for (b = 0, i = f - 1; i >= 0 && i % 8 != 7; i--) RAYMACRO
             return (t < 2) ? free : (t == 2 ? occ : xray);
 }
 
 uint64 _rook90(int f, uint64 board, int t) {
     uint64 free = 0LL, occ = 0LL, xray = 0LL;
     int i, b;
-    for (b = 0, i = f-8; i >= 0; i-=8) RAYMACRO
-        for (b = 0, i = f+8; i < 64; i+=8) RAYMACRO
+    for (b = 0, i = f - 8; i >= 0; i -= 8) RAYMACRO
+        for (b = 0, i = f + 8; i < 64; i += 8) RAYMACRO
             return (t < 2) ? free : (t == 2 ? occ : xray);
 }
 
 uint64 _bishop45(int f, uint64 board, int t) {
     uint64 free = 0LL, occ = 0LL, xray = 0LL;
     int i, b;
-    for (b = 0, i = f+9; i < 64 && (i%8 != 0); i+=9) RAYMACRO
-        for (b = 0, i = f-9; i >= 0 && (i%8 != 7); i-=9) RAYMACRO
+    for (b = 0, i = f + 9; i < 64 && (i % 8 != 0); i += 9) RAYMACRO
+        for (b = 0, i = f - 9; i >= 0 && (i % 8 != 7); i -= 9) RAYMACRO
             return (t < 2) ? free : (t == 2 ? occ : xray);
 }
 
 uint64 _bishop135(int f, uint64 board, int t) {
     uint64 free = 0LL, occ = 0LL, xray = 0LL;
     int i, b;
-    for (b = 0, i = f-7; i >= 0 && (i%8 != 0); i-=7) RAYMACRO
-        for (b = 0, i = f+7; i < 64 && (i%8 != 7); i+=7) RAYMACRO
+    for (b = 0, i = f - 7; i >= 0 && (i % 8 != 0); i -= 7) RAYMACRO
+        for (b = 0, i = f + 7; i < 64 && (i % 8 != 7); i += 7) RAYMACRO
             return (t < 2) ? free : (t == 2 ? occ : xray);
 }
 
@@ -169,7 +169,7 @@ uint64 rookAttacksBB(uint32 from, uint64 occ) {
 
 uint64 queenAttacksBB(uint32 from, uint64 occ) {
     return (diagonalAttacks(occ, from) | antiDiagAttacks(occ, from)
-            | fileAttacks(occ, from) | rankAttacks(occ, from));
+        | fileAttacks(occ, from) | rankAttacks(occ, from));
 }
 
 /* this is the attack routine, capable of multiple targets,
@@ -184,20 +184,20 @@ uint32 isAtt(const position_t *pos, uint32 color, uint64 target) {
 
     while (target) {
         from = popFirstBit(&target);
-        if ((pos->rooks|pos->queens) & pos->color[color]
-                & rookAttacksBB(from, pos->occupied)) return TRUE;
-        if ((pos->bishops|pos->queens) & pos->color[color]
-                & bishopAttacksBB(from, pos->occupied)) return TRUE;
+        if ((pos->rooks | pos->queens) & pos->color[color]
+            & rookAttacksBB(from, pos->occupied)) return TRUE;
+        if ((pos->bishops | pos->queens) & pos->color[color]
+            & bishopAttacksBB(from, pos->occupied)) return TRUE;
         if (pos->knights & pos->color[color] & KnightMoves[from]) return TRUE;
         if (pos->kings & pos->color[color] & KingMoves[from]) return TRUE;
-        if (pos->pawns & pos->color[color] & PawnCaps[from][color^1]) return TRUE;
+        if (pos->pawns & pos->color[color] & PawnCaps[from][color ^ 1]) return TRUE;
     }
     return FALSE;
 }
 
 /* this determines if the side to move is in check */
 uint32 kingIsInCheck(const position_t *pos) {
-    return isAtt(pos, pos->side^1, pos->kings & pos->color[pos->side]);
+    return isAtt(pos, pos->side ^ 1, pos->kings & pos->color[pos->side]);
 }
 /* this returns the pinned pieces to the King of the side Color */
 uint64 pinnedPieces(const position_t *pos, uint32 c) {
@@ -205,7 +205,7 @@ uint64 pinnedPieces(const position_t *pos, uint32 c) {
     int t, ksq;
     pin = 0ULL;
     ksq = pos->kpos[c];
-    pinners = pos->color[c^1] & (pos->queens|pos->rooks);
+    pinners = pos->color[c ^ 1] & (pos->queens | pos->rooks);
     if (pinners) {
         b = rookAttacksBBX(ksq, pos->occupied) & pinners;
         while (b) {
@@ -213,7 +213,7 @@ uint64 pinnedPieces(const position_t *pos, uint32 c) {
             pin |= InBetween[t][ksq] & pos->color[c];
         }
     }
-    pinners = pos->color[c^1] & (pos->queens|pos->bishops);
+    pinners = pos->color[c ^ 1] & (pos->queens | pos->bishops);
     if (pinners) {
         b = bishopAttacksBBX(ksq, pos->occupied) & pinners;
         while (b) {
@@ -229,8 +229,8 @@ uint64 discoveredCheckCandidates(const position_t *pos, uint32 c) {
     uint64 b, pin, pinners;
     int t, ksq;
     pin = 0ULL;
-    ksq = pos->kpos[c^1];
-    pinners = pos->color[c] & (pos->queens|pos->rooks);
+    ksq = pos->kpos[c ^ 1];
+    pinners = pos->color[c] & (pos->queens | pos->rooks);
     if (pinners) {
         b = rookAttacksBBX(ksq, pos->occupied) & pinners;
         while (b) {
@@ -238,7 +238,7 @@ uint64 discoveredCheckCandidates(const position_t *pos, uint32 c) {
             pin |= InBetween[t][ksq] & pos->color[c];
         }
     }
-    pinners = pos->color[c] & (pos->queens|pos->bishops);
+    pinners = pos->color[c] & (pos->queens | pos->bishops);
     if (pinners) {
         b = bishopAttacksBBX(ksq, pos->occupied) & pinners;
         while (b) {
@@ -262,7 +262,7 @@ uint32 moveIsLegal(const position_t *pos, uint32 move, uint64 pinned, uint32 inc
     if (isCastle(move)) return TRUE;
 
     us = pos->side;
-    them = us^1;
+    them = us ^ 1;
     from = moveFrom(move);
     to = moveTo(move);
     ksq = pos->kpos[us];
@@ -272,7 +272,7 @@ uint32 moveIsLegal(const position_t *pos, uint32 move, uint64 pinned, uint32 inc
         b = pos->occupied ^ BitMask[from] ^ BitMask[capsq] ^ BitMask[to];
         return
             (!(rookAttacksBB(ksq, b) & (pos->queens | pos->rooks) & pos->color[them]) &&
-             !(bishopAttacksBB(ksq, b) & (pos->queens | pos->bishops) & pos->color[them]));
+                !(bishopAttacksBB(ksq, b) & (pos->queens | pos->bishops) & pos->color[them]));
     }
     if (from == ksq) return !(isAtt(pos, them, BitMask[to]));
     if (!(pinned & BitMask[from])) return TRUE;
@@ -318,7 +318,7 @@ uint32 moveIsCheck(const position_t *pos, uint32 m, uint64 dcc) {
         if (isEnPassant(m)) {
             temp ^= BitMask[(SQRANK(from) << 3) + SQFILE(to)];
             if ((rookAttacksBB(ksq, temp) & (pos->queens | pos->rooks)
-            & pos->color[us]) || (bishopAttacksBB(ksq, temp) & (pos->queens | pos->bishops) & pos->color[us]))
+                & pos->color[us]) || (bishopAttacksBB(ksq, temp) & (pos->queens | pos->bishops) & pos->color[us]))
                 return TRUE;
         }
         return FALSE;
@@ -345,13 +345,13 @@ uint32 moveIsCheck(const position_t *pos, uint32 m, uint64 dcc) {
 
     case KING:
         if ((dcc & BitMask[from]) &&
-                Direction[from][ksq] != Direction[to][ksq]) return TRUE;
+            Direction[from][ksq] != Direction[to][ksq]) return TRUE;
         temp = pos->occupied ^ BitMask[from] ^ BitMask[to];
         if (from - to == 2) {
-            if (rookAttacksBB(ksq, temp) & BitMask[from-1]) return TRUE;
+            if (rookAttacksBB(ksq, temp) & BitMask[from - 1]) return TRUE;
         }
         if (from - to == -2) {
-            if (rookAttacksBB(ksq, temp) & BitMask[from+1]) return TRUE;
+            if (rookAttacksBB(ksq, temp) & BitMask[from + 1]) return TRUE;
         }
         return FALSE;
 
@@ -387,7 +387,7 @@ uint64 attackingPiecesSide(const position_t *pos, uint32 sq, uint32 side) {
     ASSERT(squareIsOk(sq));
     ASSERT(colorIsOk(side));
 
-    attackers |= PawnCaps[sq][side^1] & pos->pawns;
+    attackers |= PawnCaps[sq][side ^ 1] & pos->pawns;
     attackers |= KnightMoves[sq] & pos->knights;
     attackers |= KingMoves[sq] & pos->kings;
     attackers |= bishopAttacksBB(sq, pos->occupied) & (pos->bishops | pos->queens);
@@ -398,7 +398,6 @@ uint64 attackingPiecesSide(const position_t *pos, uint32 sq, uint32 side) {
 /* this returns the bitboard of sliding pieces attacking in a direction
 behind the piece attacker */
 uint64 behindFigure(uint64 QR, uint64 QB, uint64 occupied, uint32 from, int dir) {
-
     ASSERT(squareIsOk(from));
 
     switch (dir) {
@@ -422,7 +421,7 @@ int swap(const position_t *pos, uint32 m) {
     int lastvalue = PcValSEE[pc];
     int n = 1;
     int lsb;
-    int c = pos->side^1;
+    int c = pos->side ^ 1;
     int dir = Direction[to][from];
     int slist[32];
     uint64 attack;
@@ -443,52 +442,59 @@ int swap(const position_t *pos, uint32 m) {
     }
 
     if (dir && pc != KING) {
-        attack |= behindFigure((pos->queens|pos->rooks), (pos->queens|pos->bishops),
-                               pos->occupied, from, dir);
+        attack |= behindFigure((pos->queens | pos->rooks), (pos->queens | pos->bishops),
+            pos->occupied, from, dir);
     }
 
     if (isEnPassant(m)) {
-        attack |= behindFigure((pos->queens|pos->rooks), (pos->queens|pos->bishops), pos->occupied, to, Direction[to][to + ((pos->side == WHITE) ? -8 : 8)]);
+        attack |= behindFigure((pos->queens | pos->rooks), (pos->queens | pos->bishops), pos->occupied, to, Direction[to][to + ((pos->side == WHITE) ? -8 : 8)]);
     }
 
     while (attack) {
         if (attack & pos->pawns & pos->color[c]) {
             lsb = getFirstBit(attack & pos->pawns & pos->color[c]);
             pc = PAWN;
-        } else if (attack & pos->knights & pos->color[c]) {
+        }
+        else if (attack & pos->knights & pos->color[c]) {
             lsb = getFirstBit(attack & pos->knights & pos->color[c]);
             pc = KNIGHT;
-        } else if (attack & pos->bishops & pos->color[c]) {
+        }
+        else if (attack & pos->bishops & pos->color[c]) {
             lsb = getFirstBit(attack & pos->bishops & pos->color[c]);
             pc = BISHOP;
-        } else if (attack & pos->rooks & pos->color[c]) {
+        }
+        else if (attack & pos->rooks & pos->color[c]) {
             lsb = getFirstBit(attack & pos->rooks & pos->color[c]);
             pc = ROOK;
-        } else if (attack & pos->queens & pos->color[c]) {
+        }
+        else if (attack & pos->queens & pos->color[c]) {
             lsb = getFirstBit(attack & pos->queens & pos->color[c]);
             pc = QUEEN;
-        } else if (attack & pos->kings & pos->color[c]) {
+        }
+        else if (attack & pos->kings & pos->color[c]) {
             lsb = getFirstBit(attack & pos->kings & pos->color[c]);
             pc = KING;
-        } else break;
+        }
+        else break;
 
-        slist[n] = -slist[n-1] + lastvalue;
+        slist[n] = -slist[n - 1] + lastvalue;
         if (lastvalue == PcValSEE[KING]) break;
         if (pc == PAWN && PAWN_RANK(lsb, c) == Rank7) {
             lastvalue = PcValSEE[QUEEN];
             slist[n] += PcValSEE[QUEEN] - PcValSEE[PAWN];
-        } else lastvalue = PcValSEE[pc];
+        }
+        else lastvalue = PcValSEE[pc];
         dir = Direction[to][lsb];
         if (dir && pc != KING)
-            attack |= behindFigure((pos->queens|pos->rooks), (pos->queens|pos->bishops),
-                                   pos->occupied, lsb, dir);
+            attack |= behindFigure((pos->queens | pos->rooks), (pos->queens | pos->bishops),
+                pos->occupied, lsb, dir);
         attack ^= BitMask[lsb];
         n++;
         c ^= 1;
     }
     while (--n) {
-        if (slist[n] > -slist[n-1])
-            slist[n-1] = -slist[n];
+        if (slist[n] > -slist[n - 1])
+            slist[n - 1] = -slist[n];
     }
     return slist[0];
 }

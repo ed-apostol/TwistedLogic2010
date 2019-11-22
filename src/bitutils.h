@@ -8,37 +8,37 @@
 
 #ifdef VERSION64BIT
 #ifdef _MSC_VER
-   #if defined(_WIN64) || defined(__LP64__)
-      #pragma intrinsic(_BitScanForward64)
-      #pragma intrinsic(_BitScanReverse64)
-      #define USING_INTRINSICS
-   #endif
+#if defined(_WIN64) || defined(__LP64__)
+#pragma intrinsic(_BitScanForward64)
+#pragma intrinsic(_BitScanReverse64)
+#define USING_INTRINSICS
+#endif
 #elif defined(__GNUC__) && defined(__LP64__)
-   static INLINE unsigned char _BitScanForward64(unsigned int* const Index, const U64 Mask)
-   {
-      U64 Ret;
-      __asm__
-      (
-         "bsfq %[Mask], %[Ret]"
-         :[Ret] "=r" (Ret)
-         :[Mask] "mr" (Mask)
-      );
-      *Index = (unsigned int)Ret;
-      return Mask?1:0;
-   }
-   static INLINE unsigned char _BitScanReverse64(unsigned int* const Index, const U64 Mask)
-   {
-      U64 Ret;
-      __asm__
-      (
-         "bsrq %[Mask], %[Ret]"
-         :[Ret] "=r" (Ret)
-         :[Mask] "mr" (Mask)
-      );
-      *Index = (unsigned int)Ret;
-      return Mask?1:0;
-   }
-   #define USING_INTRINSICS
+static INLINE unsigned char _BitScanForward64(unsigned int* const Index, const U64 Mask)
+{
+    U64 Ret;
+    __asm__
+    (
+        "bsfq %[Mask], %[Ret]"
+        :[Ret] "=r" (Ret)
+        : [Mask] "mr" (Mask)
+    );
+    *Index = (unsigned int)Ret;
+    return Mask ? 1 : 0;
+}
+static INLINE unsigned char _BitScanReverse64(unsigned int* const Index, const U64 Mask)
+{
+    U64 Ret;
+    __asm__
+    (
+        "bsrq %[Mask], %[Ret]"
+        :[Ret] "=r" (Ret)
+        : [Mask] "mr" (Mask)
+    );
+    *Index = (unsigned int)Ret;
+    return Mask ? 1 : 0;
+}
+#define USING_INTRINSICS
 #endif
 /* returns the least significant square from the 64 bitfield */
 INLINE uint32 getFirstBit(uint64 bb) {
@@ -66,8 +66,8 @@ INLINE uint32 bitCnt(uint64 x) {
 /* this count the number of bits in a given bitfield,
 it is using a SWAR algorithm I think */
 INLINE uint32 bitCnt(uint64 bb) {
-    uint32 w = (uint32) (bb >> 32);
-    uint32 v = (uint32) bb;
+    uint32 w = (uint32)(bb >> 32);
+    uint32 v = (uint32)bb;
 
     v = v - ((v >> 1) & 0x55555555);
     w = w - ((w >> 1) & 0x55555555);
@@ -75,7 +75,7 @@ INLINE uint32 bitCnt(uint64 bb) {
     w = (w & 0x33333333) + ((w >> 2) & 0x33333333);
     v = (v + (v >> 4)) & 0x0F0F0F0F;
     w = (w + (w >> 4)) & 0x0F0F0F0F;
-    v = ((v+w) * 0x01010101) >> 24;
+    v = ((v + w) * 0x01010101) >> 24;
     return v;
 }
 /* returns the least significant square from the 64 bitfield */
@@ -124,7 +124,7 @@ uint64 fillDown2(uint64 b) {
 }
 
 // shift the parameter b with i places to the left
-uint64 shiftLeft(uint64 b, uint32 i) {return (b << i);}
+uint64 shiftLeft(uint64 b, uint32 i) { return (b << i); }
 
 // shift the parameter b with i places to the right
-uint64 shiftRight(uint64 b, uint32 i) {return (b >> i);}
+uint64 shiftRight(uint64 b, uint32 i) { return (b >> i); }

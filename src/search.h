@@ -13,7 +13,7 @@ void ponderHit(search_info_t *si)
     ASSERT(si != NULL);
 
     if ((si->iteration >= 8 && (si->legalmoves == 1 || si->mate_found >= 3)) ||
-            (time > si->time_limit_abs))
+        (time > si->time_limit_abs))
     {
         si->thinking_status = ABORTED;
         Print(2, "info string Has searched enough the ponder move: aborting\n");
@@ -87,8 +87,8 @@ void initNode(position_t *pos, search_info_t *si)
             }
             Print(1, "time %llu ", time);
             Print(1, "nodes %llu ", si->nodes);
-            Print(1, "hashfull %d ", (pos->trans_table.used*1000)/pos->trans_table.size);
-            Print(1, "nps %llu ", (si->nodes*1000ULL)/(time));
+            Print(1, "hashfull %d ", (pos->trans_table.used * 1000) / pos->trans_table.size);
+            Print(1, "nps %llu ", (si->nodes * 1000ULL) / (time));
             Print(1, "\n");
         }
         if (si->thinking_status == THINKING && si->time_is_limited && time2 > si->time_limit_max)
@@ -144,7 +144,7 @@ int simpleStalemate(const position_t *pos)
     while (mv_bits)
     {
         to = popFirstBit(&mv_bits);
-        if (!isAtt(pos, pos->side^1, BitMask[to])) return FALSE;
+        if (!isAtt(pos, pos->side ^ 1, BitMask[to])) return FALSE;
     }
     return TRUE;
 }
@@ -185,13 +185,13 @@ void displayPV(const position_t *pos, search_info_t *si, uint32 *pv, int depth, 
     }
     else
     {
-        Print(1, "score mate %d ", (score>0)? (INF-score+1)/2 : -(INF+score)/2);
+        Print(1, "score mate %d ", (score > 0) ? (INF - score + 1) / 2 : -(INF + score) / 2);
     }
 
     Print(1, "time %llu ", time);
     Print(1, "nodes %llu ", si->nodes);
-    Print(1, "hashfull %d ", (pos->trans_table.used*1000)/pos->trans_table.size);
-    if (time > 1000) Print(1, "nps %llu ", (si->nodes*1000)/(time));
+    Print(1, "hashfull %d ", (pos->trans_table.used * 1000) / pos->trans_table.size);
+    if (time > 1000) Print(1, "nps %llu ", (si->nodes * 1000) / (time));
     Print(1, "pv ");
     for (i = 0; pv[i]; i++) Print(1, "%s ", move2Str(pv[i]));
     Print(1, "\n");
@@ -210,12 +210,12 @@ int historyIndex(uint32 side, uint32 move)
 
 int extDepth(const position_t * pos, search_info_t * si, move_t * move, int depth, BOOL *beSelective, BOOL incheck, BOOL single_reply, BOOL onPV)
 {
-    static const int checkply[2] = {1,2};
-    static const int singularply[2] = {2,2};
-    static const int pawnpushto7thply[2] = {1,1};
-    static const int passedpawnpushply[2] = {0,1};
-    static const int recaptureply[2] = {1,1};
-    static const int pawnendgameply[2] = {2,2};
+    static const int checkply[2] = { 1,2 };
+    static const int singularply[2] = { 2,2 };
+    static const int pawnpushto7thply[2] = { 1,1 };
+    static const int passedpawnpushply[2] = { 0,1 };
+    static const int recaptureply[2] = { 1,1 };
+    static const int pawnendgameply[2] = { 2,2 };
     int extend = 0;
     *beSelective = TRUE;
     if (incheck) extend += checkply[onPV];
@@ -242,7 +242,7 @@ int qSearchEvasion(position_t *pos, search_info_t *si, int alpha, int beta, int 
     uint32 newPV[MAXPLY];
     uint64 pinned;
     uint64 dcc;
-    uint64 target = pos->color[pos->side^1] & ~pos->kings;
+    uint64 target = pos->color[pos->side ^ 1] & ~pos->kings;
     move_t *move;
     sort_t sort;
     undo_t undo;
@@ -260,9 +260,9 @@ int qSearchEvasion(position_t *pos, search_info_t *si, int alpha, int beta, int 
     if (si->thinking_status == ABORTED) return 0;
     if (pos->ply > si->maxplysearched) si->maxplysearched = pos->ply;
     if (reps(pos, 1)) return 0;
-    if ((pos->ply >= MAXPLY-1) || (pos->sp >= MAXDATA-1)) return eval(pos);
-    alpha = MAX(-INF+pos->ply, alpha);
-    beta = MIN(INF-pos->ply-1, beta);
+    if ((pos->ply >= MAXPLY - 1) || (pos->sp >= MAXDATA - 1)) return eval(pos);
+    alpha = MAX(-INF + pos->ply, alpha);
+    beta = MIN(INF - pos->ply - 1, beta);
     if (alpha >= beta) return alpha;
     pinned = pinnedPieces(pos, pos->side);
     dcc = discoveredCheckCandidates(pos, pos->side);
@@ -271,10 +271,10 @@ int qSearchEvasion(position_t *pos, search_info_t *si, int alpha, int beta, int 
     {
         moveGivesCheck = moveIsCheck(pos, move->m, dcc);
         if (bestvalue > -INF + MAXPLY && !moveGivesCheck && !moveIsTactical(move->m) && movePiece(move->m) != KING
-                && !(pos->castle | (pos->side==WHITE?(WCKS|WCQS):(BCKS|BCKS))) && swap(pos, move->m) < 0) continue;
+            && !(pos->castle | (pos->side == WHITE ? (WCKS | WCQS) : (BCKS | BCKS))) && swap(pos, move->m) < 0) continue;
         makeMove(pos, &undo, move->m);
         if (moveGivesCheck) score = -qSearchEvasion(pos, si, -beta, -alpha, depth, newPV);
-        else score = -qSearch(pos, si, -beta, -alpha, depth-1, newPV);
+        else score = -qSearch(pos, si, -beta, -alpha, depth - 1, newPV);
         unmakeMove(pos, &undo);
         if (si->thinking_status == ABORTED) return 0;
         if (score > bestvalue)
@@ -302,7 +302,7 @@ int qSearch(position_t *pos, search_info_t *si, int alpha, int beta, int depth, 
     uint32 newPV[MAXPLY];
     uint64 pinned;
     uint64 dcc;
-    uint64 target = pos->color[pos->side^1] & ~pos->kings;
+    uint64 target = pos->color[pos->side ^ 1] & ~pos->kings;
     move_t *move;
     sort_t sort;
     undo_t undo;
@@ -321,9 +321,9 @@ int qSearch(position_t *pos, search_info_t *si, int alpha, int beta, int depth, 
     if (si->thinking_status == ABORTED) return 0;
     if (pos->ply > si->maxplysearched) si->maxplysearched = pos->ply;
     if (reps(pos, 1)) return 0;
-    if ((pos->ply >= MAXPLY-1) || (pos->sp >= MAXDATA-1)) return eval(pos);
-    alpha = MAX(-INF+pos->ply, alpha);
-    beta = MIN(INF-pos->ply-1, beta);
+    if ((pos->ply >= MAXPLY - 1) || (pos->sp >= MAXDATA - 1)) return eval(pos);
+    alpha = MAX(-INF + pos->ply, alpha);
+    beta = MIN(INF - pos->ply - 1, beta);
     if (alpha >= beta) return alpha;
     if (simpleStalemate(pos)) return 0;
     evalvalue = bestvalue = eval(pos);
@@ -332,15 +332,15 @@ int qSearch(position_t *pos, search_info_t *si, int alpha, int beta, int depth, 
         alpha = evalvalue;
         if (evalvalue >= beta) return evalvalue;
     }
-    else if (opt->try_delta && (beta == alpha+1) && evalvalue < (alpha - (PawnValue + opt->delta)))
+    else if (opt->try_delta && (beta == alpha + 1) && evalvalue < (alpha - (PawnValue + opt->delta)))
     {
-        target &= ~(pos->pawns&~Rank7ByColorBB[pos->side^1]);
-        if (evalvalue < (alpha - (KnightValue + opt->delta)) && (target & (target-1)))
+        target &= ~(pos->pawns&~Rank7ByColorBB[pos->side ^ 1]);
+        if (evalvalue < (alpha - (KnightValue + opt->delta)) && (target & (target - 1)))
         {
-            static const int Shift[] = {9, 7};
-            dcc = (((*ShiftPtr[pos->side])(pos->pawns&pos->color[pos->side]&Rank7ByColorBB[pos->side], Shift[pos->side]) & ~FileABB)
-                   | ((*ShiftPtr[pos->side])(pos->pawns&pos->color[pos->side]&Rank7ByColorBB[pos->side], Shift[pos->side^1]) & ~FileHBB));
-            target &= ~((pos->knights|pos->bishops)&~dcc);
+            static const int Shift[] = { 9, 7 };
+            dcc = (((*ShiftPtr[pos->side])(pos->pawns&pos->color[pos->side] & Rank7ByColorBB[pos->side], Shift[pos->side]) & ~FileABB)
+                | ((*ShiftPtr[pos->side])(pos->pawns&pos->color[pos->side] & Rank7ByColorBB[pos->side], Shift[pos->side ^ 1]) & ~FileHBB));
+            target &= ~((pos->knights | pos->bishops)&~dcc);
             if (evalvalue < (alpha - (RookValue + opt->delta)))
             {
                 target &= ~(pos->rooks&~dcc);
@@ -355,7 +355,7 @@ int qSearch(position_t *pos, search_info_t *si, int alpha, int beta, int depth, 
         moveGivesCheck = moveIsCheck(pos, move->m, dcc);
         makeMove(pos, &undo, move->m);
         if (moveGivesCheck) score = -qSearchEvasion(pos, si, -beta, -alpha, depth, newPV);
-        else score = -qSearch(pos, si, -beta, -alpha, depth-1, newPV);
+        else score = -qSearch(pos, si, -beta, -alpha, depth - 1, newPV);
         unmakeMove(pos, &undo);
         if (si->thinking_status == ABORTED) return 0;
         if (score > bestvalue)
@@ -385,7 +385,7 @@ int searchEvasion(position_t *pos, search_info_t *si, int beta, int depth, uint3
     uint32 newPV[MAXPLY];
     uint64 pinned;
     uint64 dcc;
-    uint64 target = pos->color[pos->side^1] & ~pos->kings;
+    uint64 target = pos->color[pos->side ^ 1] & ~pos->kings;
     move_t *move;
     sort_t sort;
     undo_t undo;
@@ -404,8 +404,8 @@ int searchEvasion(position_t *pos, search_info_t *si, int beta, int depth, uint3
     if (si->thinking_status == ABORTED) return 0;
     if (pos->ply > si->maxplysearched) si->maxplysearched = pos->ply;
     if (reps(pos, 1)) return 0;
-    if (-INF+pos->ply >= beta) return beta;
-    if (INF-pos->ply-1 < beta) return beta - 1;
+    if (-INF + pos->ply >= beta) return beta;
+    if (INF - pos->ply - 1 < beta) return beta - 1;
     if (opt->try_hash) entry = transProbe(pos);
     if (entry != NULL)
     {
@@ -413,7 +413,7 @@ int searchEvasion(position_t *pos, search_info_t *si, int beta, int depth, uint3
         if (depth <= transMindepth(entry) && transMinvalue(entry) >= beta) return transMinvalue(entry);
         if (depth <= transMaxdepth(entry) && transMaxvalue(entry) < beta) return transMaxvalue(entry);
     }
-    if ((pos->ply >= MAXPLY-1) || (pos->sp >= MAXDATA-1)) return eval(pos);
+    if ((pos->ply >= MAXPLY - 1) || (pos->sp >= MAXDATA - 1)) return eval(pos);
     pinned = pinnedPieces(pos, pos->side);
     dcc = discoveredCheckCandidates(pos, pos->side);
     sortInit(pos, &sort, si, pinned, target, depth, MoveGenPhaseEvasion);
@@ -425,12 +425,12 @@ int searchEvasion(position_t *pos, search_info_t *si, int beta, int depth, uint3
         played++;
         if (moveGivesCheck)
         {
-            if (newdepth <= 0) score = -qSearchEvasion(pos, si, -beta, 1-beta, 0, newPV);
-            else score = -searchEvasion(pos, si, 1-beta, newdepth, newPV);
+            if (newdepth <= 0) score = -qSearchEvasion(pos, si, -beta, 1 - beta, 0, newPV);
+            else score = -searchEvasion(pos, si, 1 - beta, newdepth, newPV);
         }
         else if (newdepth <= 0)
         {
-            score = -qSearch(pos, si, -beta, 1-beta, 0, newPV);
+            score = -qSearch(pos, si, -beta, 1 - beta, 0, newPV);
         }
         else
         {
@@ -444,11 +444,11 @@ int searchEvasion(position_t *pos, search_info_t *si, int beta, int depth, uint3
                         newdepthclone--;
                 }
             }
-            if (newdepthclone <= 0) score = -qSearch(pos, si, -beta, 1-beta, 0, newPV);
-            else score = -searchZero(pos, si, 1-beta, newdepthclone, newPV, TRUE);
+            if (newdepthclone <= 0) score = -qSearch(pos, si, -beta, 1 - beta, 0, newPV);
+            else score = -searchZero(pos, si, 1 - beta, newdepthclone, newPV, TRUE);
             if (si->thinking_status != ABORTED && newdepthclone < newdepth && score >= beta)
             {
-                score = -searchZero(pos, si, 1-beta, newdepth, newPV, FALSE);
+                score = -searchZero(pos, si, 1 - beta, newdepth, newPV, FALSE);
             }
         }
         unmakeMove(pos, &undo);
@@ -483,7 +483,7 @@ int searchSelective(position_t *pos, search_info_t *si, int beta, int depth, uin
     uint32 newPV[MAXPLY];
     uint64 pinned;
     uint64 dcc;
-    uint64 target = pos->color[pos->side^1] & ~pos->kings;
+    uint64 target = pos->color[pos->side ^ 1] & ~pos->kings;
     move_t *move;
     sort_t sort;
     undo_t undo;
@@ -514,12 +514,12 @@ int searchSelective(position_t *pos, search_info_t *si, int beta, int depth, uin
         played++;
         if (moveGivesCheck)
         {
-            if (newdepth <= 0) score = -qSearchEvasion(pos, si, -beta, 1-beta, 0, newPV);
-            else score = -searchEvasion(pos, si, 1-beta, newdepth, newPV);
+            if (newdepth <= 0) score = -qSearchEvasion(pos, si, -beta, 1 - beta, 0, newPV);
+            else score = -searchEvasion(pos, si, 1 - beta, newdepth, newPV);
         }
         else if (newdepth <= 0)
         {
-            score = -qSearch(pos, si, -beta, 1-beta, 0, newPV);
+            score = -qSearch(pos, si, -beta, 1 - beta, 0, newPV);
         }
         else
         {
@@ -533,11 +533,11 @@ int searchSelective(position_t *pos, search_info_t *si, int beta, int depth, uin
                         newdepthclone--;
                 }
             }
-            if (newdepthclone <= 0) score = -qSearch(pos, si, -beta, 1-beta, 0, newPV);
-            else score = -searchZero(pos, si, 1-beta, newdepthclone, newPV, TRUE);
+            if (newdepthclone <= 0) score = -qSearch(pos, si, -beta, 1 - beta, 0, newPV);
+            else score = -searchZero(pos, si, 1 - beta, newdepthclone, newPV, TRUE);
             if (si->thinking_status != ABORTED && newdepthclone < newdepth && score >= beta)
             {
-                score = -searchZero(pos, si, 1-beta, newdepth, newPV, FALSE);
+                score = -searchZero(pos, si, 1 - beta, newdepth, newPV, FALSE);
             }
         }
         unmakeMove(pos, &undo);
@@ -573,7 +573,7 @@ int searchZero(position_t *pos, search_info_t *si, int beta, int depth, uint32 o
     uint32 newPV[MAXPLY];
     uint64 pinned;
     uint64 dcc;
-    uint64 target = pos->color[pos->side^1] & ~pos->kings;
+    uint64 target = pos->color[pos->side ^ 1] & ~pos->kings;
     move_t *move;
     sort_t sort;
     undo_t undo;
@@ -593,8 +593,8 @@ int searchZero(position_t *pos, search_info_t *si, int beta, int depth, uint32 o
     if (si->thinking_status == ABORTED) return 0;
     if (pos->ply > si->maxplysearched) si->maxplysearched = pos->ply;
     if (reps(pos, 1)) return 0;
-    if (-INF+pos->ply >= beta) return beta;
-    if (INF-pos->ply-1 < beta) return beta - 1;
+    if (-INF + pos->ply >= beta) return beta;
+    if (INF - pos->ply - 1 < beta) return beta - 1;
     if (opt->try_hash) entry = transProbe(pos);
     if (entry != NULL)
     {
@@ -604,26 +604,26 @@ int searchZero(position_t *pos, search_info_t *si, int beta, int depth, uint32 o
         if (depth <= transMinDepth && transMinScore >= beta) return transMinScore;
         if (depth <= transMaxdepth(entry) && transMaxvalue(entry) < beta) return transMaxvalue(entry);
     }
-    if ((pos->ply >= MAXPLY-1) || (pos->sp >= MAXDATA-1)) return eval(pos);
+    if ((pos->ply >= MAXPLY - 1) || (pos->sp >= MAXDATA - 1)) return eval(pos);
     evalvalue = eval(pos);
 
     if (donull && (pos->color[pos->side] & ~(pos->pawns | pos->kings))
-            && beta > -INF + MAXPLY && beta < INF - MAXPLY
-            && (pos->color[WHITE] & pos->pawns & Rank7BB)==0
-            && (pos->color[BLACK] & pos->pawns & Rank2BB)==0)
+        && beta > -INF + MAXPLY && beta < INF - MAXPLY
+        && (pos->color[WHITE] & pos->pawns & Rank7BB) == 0
+        && (pos->color[BLACK] & pos->pawns & Rank2BB) == 0)
     {
-        int guess = depth*depth*opt->raz_margin;
-        if (evalvalue > beta + guess) return evalvalue-guess;
+        int guess = depth * depth*opt->raz_margin;
+        if (evalvalue > beta + guess) return evalvalue - guess;
     }
 
     if (opt->try_null && donull && depth >= 2
-            && (bitCnt(pos->color[pos->side] & ~pos->pawns) >= 2)
-            && beta > -INF + MAXPLY && beta < INF - MAXPLY && evalvalue >= beta)
+        && (bitCnt(pos->color[pos->side] & ~pos->pawns) >= 2)
+        && beta > -INF + MAXPLY && beta < INF - MAXPLY && evalvalue >= beta)
     {
         int R = 3 + (depth / 5) + (evalvalue - beta > 75);
         makeNullMove(pos, &undo);
-        if (depth <= R)  score = -qSearch(pos, si, -beta, 1-beta, 0, newPV);
-        else score = -searchZero(pos, si, 1-beta, depth-R, newPV, FALSE);
+        if (depth <= R)  score = -qSearch(pos, si, -beta, 1 - beta, 0, newPV);
+        else score = -searchZero(pos, si, 1 - beta, depth - R, newPV, FALSE);
         unmakeNullMove(pos, &undo);
         if (si->thinking_status == ABORTED) return 0;
         if (score >= beta)
@@ -642,23 +642,23 @@ int searchZero(position_t *pos, search_info_t *si, int beta, int depth, uint32 o
     {
         if (si->transmove[pos->ply] == EMPTY)
         {
-            transMinDepth = depth/2;
-            transMinScore =	searchZero(pos, si, beta, transMinDepth, newPV, FALSE);
+            transMinDepth = depth / 2;
+            transMinScore = searchZero(pos, si, beta, transMinDepth, newPV, FALSE);
             if (si->thinking_status == ABORTED) return 0;
             si->transmove[pos->ply] = newPV[pos->ply];
         }
         if (si->transmove[pos->ply] != EMPTY && transMinDepth >= depth - 3 && transMinScore != -INF
-                && !moveIsCheck(pos, si->transmove[pos->ply], dcc))
+            && !moveIsCheck(pos, si->transmove[pos->ply], dcc))
         {
-            int targetScore = transMinScore-150;
-            int value = searchSelective(pos, si, targetScore, depth/2, newPV, si->transmove[pos->ply]);
+            int targetScore = transMinScore - 150;
+            int value = searchSelective(pos, si, targetScore, depth / 2, newPV, si->transmove[pos->ply]);
             if (si->thinking_status == ABORTED) return 0;
             if (value < targetScore) firstExtend = TRUE;
         }
     }
 
     phase = MoveGenPhaseStandard;
-    if (opt->try_raz && (pos->color[pos->side^1] & ~(pos->pawns | pos->kings)))
+    if (opt->try_raz && (pos->color[pos->side ^ 1] & ~(pos->pawns | pos->kings)))
     {
         score = evalvalue + ((depth - 1) * (depth - 1) + 1) * opt->raz_mul;
         if (score < beta)
@@ -675,14 +675,14 @@ int searchZero(position_t *pos, search_info_t *si, int beta, int depth, uint32 o
         if (opt->try_prunerazor && phase != MoveGenPhaseStandard && !moveGivesCheck)
         {
             if ((MoveGenPhase[sort.phase] == PH_BAD_CAPTURES)
-                    && DISTANCE(moveTo(move->m),pos->kpos[pos->side]) >= 3
-                    && DISTANCE(moveTo(move->m),pos->kpos[pos->side^1]) >= 3
-                    && evalvalue + (depth-1) * (depth-1) * opt->raz_margin + PcValSEE[moveCapture(move->m)]< beta)
+                && DISTANCE(moveTo(move->m), pos->kpos[pos->side]) >= 3
+                && DISTANCE(moveTo(move->m), pos->kpos[pos->side ^ 1]) >= 3
+                && evalvalue + (depth - 1) * (depth - 1) * opt->raz_margin + PcValSEE[moveCapture(move->m)] < beta)
                 continue;
             if ((MoveGenPhase[sort.phase] == PH_QUIET_PASSEDPAWNS_PURE ||
-                    MoveGenPhase[sort.phase] == PH_QUIET_PASSEDPAWNS) &&
-                    (evalvalue+BishopValue+ depth * depth * opt->raz_margin <= beta
-                     || DISTANCE(moveTo(move->m), PAWN_PROMOTE(moveTo(move->m),pos->side)) > depth/2+2))
+                MoveGenPhase[sort.phase] == PH_QUIET_PASSEDPAWNS) &&
+                (evalvalue + BishopValue + depth * depth * opt->raz_margin <= beta
+                    || DISTANCE(moveTo(move->m), PAWN_PROMOTE(moveTo(move->m), pos->side)) > depth / 2 + 2))
                 continue;
         }
         newdepth = extDepth(pos, si, move, depth, &beSelective, moveGivesCheck, FALSE, FALSE);
@@ -691,12 +691,12 @@ int searchZero(position_t *pos, search_info_t *si, int beta, int depth, uint32 o
         played++;
         if (moveGivesCheck)
         {
-            if (newdepth <= 0) score = -qSearchEvasion(pos, si, -beta, 1-beta, 0, newPV);
-            else score = -searchEvasion(pos, si, 1-beta, newdepth, newPV);
+            if (newdepth <= 0) score = -qSearchEvasion(pos, si, -beta, 1 - beta, 0, newPV);
+            else score = -searchEvasion(pos, si, 1 - beta, newdepth, newPV);
         }
         else if (newdepth <= 0)
         {
-            score = -qSearch(pos, si, -beta, 1-beta, 0, newPV);
+            score = -qSearch(pos, si, -beta, 1 - beta, 0, newPV);
         }
         else
         {
@@ -710,11 +710,11 @@ int searchZero(position_t *pos, search_info_t *si, int beta, int depth, uint32 o
                         newdepthclone--;
                 }
             }
-            if (newdepthclone <= 0) score = -qSearch(pos, si, -beta, 1-beta, 0, newPV);
-            else score = -searchZero(pos, si, 1-beta, newdepthclone, newPV, TRUE);
+            if (newdepthclone <= 0) score = -qSearch(pos, si, -beta, 1 - beta, 0, newPV);
+            else score = -searchZero(pos, si, 1 - beta, newdepthclone, newPV, TRUE);
             if (si->thinking_status != ABORTED && newdepthclone < newdepth && score >= beta)
             {
-                score = -searchZero(pos, si, 1-beta, newdepth, newPV, FALSE);
+                score = -searchZero(pos, si, 1 - beta, newdepth, newPV, FALSE);
             }
         }
         unmakeMove(pos, &undo);
@@ -769,7 +769,7 @@ int searchPV(position_t *pos, search_info_t *si, int alpha, int beta, int depth,
     uint32 newPV[MAXPLY];
     uint64 pinned;
     uint64 dcc;
-    uint64 target = pos->color[pos->side^1] & ~pos->kings;
+    uint64 target = pos->color[pos->side ^ 1] & ~pos->kings;
     move_t *move;
     sort_t sort;
     undo_t undo;
@@ -790,8 +790,8 @@ int searchPV(position_t *pos, search_info_t *si, int alpha, int beta, int depth,
     if (si->thinking_status == ABORTED) return 0;
     if (pos->ply > si->maxplysearched) si->maxplysearched = pos->ply;
     if (reps(pos, 1) || pos->fifty >= 100) return 0;
-    alpha = MAX(-INF+pos->ply, alpha);
-    beta = MIN(INF-pos->ply-1, beta);
+    alpha = MAX(-INF + pos->ply, alpha);
+    beta = MIN(INF - pos->ply - 1, beta);
     if (alpha >= beta) return alpha;
     if (opt->try_hash) entry = transProbe(pos);
     if (entry != NULL)
@@ -800,11 +800,11 @@ int searchPV(position_t *pos, search_info_t *si, int alpha, int beta, int depth,
         transMinScore = transMinvalue(entry);
         transMinDepth = transMindepth(entry);
     }
-    if ((pos->ply >= MAXPLY-1) || (pos->sp >= MAXDATA-1)) return eval(pos);
+    if ((pos->ply >= MAXPLY - 1) || (pos->sp >= MAXDATA - 1)) return eval(pos);
     if (opt->try_iid && si->transmove[pos->ply] == EMPTY && depth >= opt->iid_depth)
     {
-        transMinDepth = depth/2;
-        transMinScore = searchPV(pos, si, alpha, beta, depth-2, inCheck, newPV);
+        transMinDepth = depth / 2;
+        transMinScore = searchPV(pos, si, alpha, beta, depth - 2, inCheck, newPV);
         if (si->thinking_status == ABORTED) return 0;
         /*if (transMinScore <= alpha) {
             transMinScore = searchPV(pos, si, -INF, beta, depth-2, inCheck, newPV);
@@ -817,10 +817,10 @@ int searchPV(position_t *pos, search_info_t *si, int alpha, int beta, int depth,
     dcc = discoveredCheckCandidates(pos, pos->side);
 
     if (depth >= 6 && si->transmove[pos->ply] != EMPTY && transMinDepth >= depth - 3
-            && transMinScore != -INF && !moveIsCheck(pos, si->transmove[pos->ply], dcc))
+        && transMinScore != -INF && !moveIsCheck(pos, si->transmove[pos->ply], dcc))
     {
-        int targetDepth = depth-2;
-        int targetScore = transMinScore-150;
+        int targetDepth = depth - 2;
+        int targetScore = transMinScore - 150;
         int value = searchSelective(pos, si, targetScore, targetDepth, newPV, si->transmove[pos->ply]);
         if (si->thinking_status == ABORTED) return 0;
         if (value < targetScore) firstExtend = TRUE;
@@ -847,12 +847,12 @@ int searchPV(position_t *pos, search_info_t *si, int alpha, int beta, int depth,
         {
             if (moveGivesCheck)
             {
-                if (newdepth <= 0) score = -qSearchEvasion(pos, si, -alpha-1, -alpha, 0, newPV);
+                if (newdepth <= 0) score = -qSearchEvasion(pos, si, -alpha - 1, -alpha, 0, newPV);
                 else score = -searchEvasion(pos, si, -alpha, newdepth, newPV);
             }
             else if (newdepth <= 0)
             {
-                score = -qSearch(pos, si, -alpha-1, -alpha, 0, newPV);
+                score = -qSearch(pos, si, -alpha - 1, -alpha, 0, newPV);
             }
             else
             {
@@ -861,7 +861,7 @@ int searchPV(position_t *pos, search_info_t *si, int alpha, int beta, int depth,
                 {
                     if (opt->try_pvlmr1 && depth >= opt->lmr1_depth && played >= opt->pvlmr_num) newdepthclone--;
                 }
-                if (newdepthclone <= 0) score = -qSearch(pos, si, -alpha-1, -alpha, 0, newPV);
+                if (newdepthclone <= 0) score = -qSearch(pos, si, -alpha - 1, -alpha, 0, newPV);
                 else score = -searchZero(pos, si, -alpha, newdepthclone, newPV, TRUE);
                 if (si->thinking_status != ABORTED && newdepthclone < newdepth && score > alpha)
                 {
@@ -1012,7 +1012,7 @@ void searchRoot(position_t *pos, search_info_t *si, sort_t *sort, uint64 dcc, in
                 si->bestmove = rootPV[0];
                 si->pondermove = rootPV[1];
                 if (sort->pos > 1) si->change = 1;
-                bestmoveindex = sort->pos-1;
+                bestmoveindex = sort->pos - 1;
             }
         }
     }
@@ -1090,7 +1090,7 @@ void getBestMove(position_t *pos, search_info_t *si)
         if (si->time_limit_max > si->time_limit_abs)
             si->time_limit_max = si->time_limit_abs;
     }
-    sortInit(pos, &sort, si, pinnedPieces(pos, pos->side), pos->color[pos->side^1] & ~pos->kings, 1, MoveGenPhaseStandard);
+    sortInit(pos, &sort, si, pinnedPieces(pos, pos->side), pos->color[pos->side ^ 1] & ~pos->kings, 1, MoveGenPhaseStandard);
     if (si->moves_is_limited == TRUE)
     {
         for (sort.size = 0; si->moves[sort.size] != 0; sort.size++)
@@ -1128,8 +1128,7 @@ void getBestMove(position_t *pos, search_info_t *si)
 
                 searchRoot(pos, si, &sort, dcc, alpha, beta, id);
                 if (si->thinking_status == ABORTED) break;
-            }
-            while (si->best_value <= alpha || si->best_value >= beta);
+            } while (si->best_value <= alpha || si->best_value >= beta);
         }
         else
         {

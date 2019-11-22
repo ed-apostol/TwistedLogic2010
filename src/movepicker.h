@@ -6,7 +6,6 @@
 /*  Description: A chess playing program.         */
 /**************************************************/
 
-
 void initSortPhases() {
     int i = 0;
 
@@ -55,7 +54,6 @@ void initSortPhases() {
 }
 
 void sortInit(const position_t *pos, sort_t *sort, search_info_t *si, uint64 pinned, uint64 target, int depth, int type) {
-
     sort->transmove = si->transmove[pos->ply];
     sort->killer1 = si->killer1[pos->ply];
     sort->killer2 = si->killer2[pos->ply];
@@ -78,7 +76,7 @@ move_t *getMove(sort_t *sort) {
     end = &sort->list[sort->size];
     if (start >= end) return NULL;
     best = start;
-    for (temp = start+1; temp < end; temp++) {
+    for (temp = start + 1; temp < end; temp++) {
         if (temp->s > best->s) best = temp;
     }
     if (best == start) return start;
@@ -90,7 +88,7 @@ move_t *getMove(sort_t *sort) {
 
 BOOL moveIsPassedPawn(const position_t * pos, uint32 move) {
     if (movePiece(move) == PAWN && !((*FillPtr[pos->side])(BitMask[moveTo(move)]) & pos->pawns)) {
-        if (!(pos->pawns & pos->color[pos->side^1] & PassedMask[pos->side][moveTo(move)])) return TRUE;
+        if (!(pos->pawns & pos->color[pos->side ^ 1] & PassedMask[pos->side][moveTo(move)])) return TRUE;
     }
     return FALSE;
 }
@@ -105,73 +103,73 @@ move_t *sortNext(position_t *pos, sort_t *sort, search_info_t *si) {
             ASSERT(moveIsOk(move->m));
 
             switch (MoveGenPhase[sort->phase]) {
-                case PH_EVASION:
-                    ASSERT(kingIsInCheck(pos));
-                    break;
-                case PH_TRANS:
-                    if (!genMoveIfLegal(pos, move->m, sort->pinned)) {
-                        entry = transProbe(pos);
-                        Print(8, "trans move failed = %s\n", move2Str(move->m));
-                        Print(8, "from = %d, to = %d, pc = %d, capt = %d, prom = %d\n",
-                            moveFrom(move->m), moveTo(move->m), movePiece(move->m),
-                            moveCapture(move->m), movePromote(move->m));
-                        Print(8, "hashlock = %s, transhashlock = %s\n", bit2Str(LOCK(pos->hash)), bit2Str(entry->hashlock));
-                        displayBoard(pos, 8);
-                        continue;
-                    }
-                    break;
-                case PH_ALL_CAPTURES:
-                    if (move->m == sort->transmove) continue;
-                case PH_ALL_CAPTURES_PURE:
-                    if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
-                    break;
-                case PH_GOOD_CAPTURES:
-                    if (move->m == sort->transmove) continue;
-                    if (!captureIsGood(pos, move->m)) {
-                        sort->bad[sort->sizebad++] = *move;
-                        continue;
-                    }
-                    if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
-                    break;
-                case PH_GOOD_CAPTURES_PURE:
-                    if (!captureIsGood(pos, move->m)) continue;
-                    if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
-                    break;
-                case PH_BAD_CAPTURES:
-                    if (move->m == sort->transmove) continue;
-                    if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
-                    break;
-                case PH_KILLER_MOVES:
-                    if (move->m == sort->transmove) continue;
-                    if (!genMoveIfLegal(pos, move->m, sort->pinned)) continue;
-                    break;
-                case PH_QUIET_MOVES:
-                    if (move->m == sort->transmove) continue;
-                    if (move->m == sort->killer1) continue;
-                    if (move->m == sort->killer2) continue;
-                    if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
-                    break;
-                case PH_QUIET_PASSEDPAWNS:
-                    ASSERT(moveIsPassedPawn(pos, move->m));
-                    if (move->m == sort->transmove) continue;
-                    if (move->m == sort->killer1) continue;
-                    if (move->m == sort->killer2) continue;
-                case PH_QUIET_PASSEDPAWNS_PURE:
-                    if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
-                    break;
-                case PH_NONTACTICAL_CHECKS:
-                    if (move->m == sort->transmove) continue;
-                    if (move->m == sort->killer1) continue;
-                    if (move->m == sort->killer2) continue;
-                    if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
-                    break;
-                case PH_NONTACTICAL_CHECKS_WIN:
-                    if (swap(pos, move->m) < 0) continue;
-                case PH_NONTACTICAL_CHECKS_PURE:
-                    if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
-                    break;
-                default:
-                    return NULL;
+            case PH_EVASION:
+                ASSERT(kingIsInCheck(pos));
+                break;
+            case PH_TRANS:
+                if (!genMoveIfLegal(pos, move->m, sort->pinned)) {
+                    entry = transProbe(pos);
+                    Print(8, "trans move failed = %s\n", move2Str(move->m));
+                    Print(8, "from = %d, to = %d, pc = %d, capt = %d, prom = %d\n",
+                        moveFrom(move->m), moveTo(move->m), movePiece(move->m),
+                        moveCapture(move->m), movePromote(move->m));
+                    Print(8, "hashlock = %s, transhashlock = %s\n", bit2Str(LOCK(pos->hash)), bit2Str(entry->hashlock));
+                    displayBoard(pos, 8);
+                    continue;
+                }
+                break;
+            case PH_ALL_CAPTURES:
+                if (move->m == sort->transmove) continue;
+            case PH_ALL_CAPTURES_PURE:
+                if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
+                break;
+            case PH_GOOD_CAPTURES:
+                if (move->m == sort->transmove) continue;
+                if (!captureIsGood(pos, move->m)) {
+                    sort->bad[sort->sizebad++] = *move;
+                    continue;
+                }
+                if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
+                break;
+            case PH_GOOD_CAPTURES_PURE:
+                if (!captureIsGood(pos, move->m)) continue;
+                if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
+                break;
+            case PH_BAD_CAPTURES:
+                if (move->m == sort->transmove) continue;
+                if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
+                break;
+            case PH_KILLER_MOVES:
+                if (move->m == sort->transmove) continue;
+                if (!genMoveIfLegal(pos, move->m, sort->pinned)) continue;
+                break;
+            case PH_QUIET_MOVES:
+                if (move->m == sort->transmove) continue;
+                if (move->m == sort->killer1) continue;
+                if (move->m == sort->killer2) continue;
+                if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
+                break;
+            case PH_QUIET_PASSEDPAWNS:
+                ASSERT(moveIsPassedPawn(pos, move->m));
+                if (move->m == sort->transmove) continue;
+                if (move->m == sort->killer1) continue;
+                if (move->m == sort->killer2) continue;
+            case PH_QUIET_PASSEDPAWNS_PURE:
+                if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
+                break;
+            case PH_NONTACTICAL_CHECKS:
+                if (move->m == sort->transmove) continue;
+                if (move->m == sort->killer1) continue;
+                if (move->m == sort->killer2) continue;
+                if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
+                break;
+            case PH_NONTACTICAL_CHECKS_WIN:
+                if (swap(pos, move->m) < 0) continue;
+            case PH_NONTACTICAL_CHECKS_PURE:
+                if (!moveIsLegal(pos, move->m, sort->pinned, FALSE)) continue;
+                break;
+            default:
+                return NULL;
             }
             return move;
         }
@@ -180,61 +178,61 @@ move_t *sortNext(position_t *pos, sort_t *sort, search_info_t *si) {
         sort->pos = 0;
 
         switch (MoveGenPhase[sort->phase]) {
-            case PH_EVASION:
-                genEvasions(pos, sort);
-                if (sort->depth <= 0) scoreAllQ(sort, si);
-                else scoreAll(pos, sort, si);
-                break;
-            case PH_TRANS:
-                sort->size = 0;
-                if (sort->transmove != EMPTY) sort->list[sort->size++].m = sort->transmove;
-                break;
-            case PH_ALL_CAPTURES:
-            case PH_ALL_CAPTURES_PURE:
-                genCaptures(pos, sort);
-                scoreCapturesPure(sort);
-                break;
-            case PH_GOOD_CAPTURES:
-                sort->sizebad = 0;
-            case PH_GOOD_CAPTURES_PURE:
-                genCaptures(pos, sort);
-                scoreCapturesPure(sort);
-                break;
-            case PH_BAD_CAPTURES:
-                for (sort->size = 0; sort->size < sort->sizebad; sort->size++)
-                    sort->list[sort->size] = sort->bad[sort->size];
-                break;
-            case PH_KILLER_MOVES:
-                sort->size = 0;
-                if (sort->killer1 != EMPTY) {
-                    sort->list[sort->size].m = sort->killer1;
-                    sort->list[sort->size].s = MAXHIST+4;
-                    sort->size++;
-                }
-                if (sort->killer2 != EMPTY) {
-                    sort->list[sort->size].m = sort->killer2;
-                    sort->list[sort->size].s = MAXHIST+2;
-                    sort->size++;
-                }
-                break;
-            case PH_QUIET_MOVES:
-                genNonCaptures(pos, sort);
-                scoreNonCaptures(sort, si);
-                break;
-            case PH_QUIET_PASSEDPAWNS_PURE:
-            case PH_QUIET_PASSEDPAWNS:
-                genPassedPawnMoves(pos, sort);
-                scoreNonCaptures(sort, si);
-                break;
-            case PH_NONTACTICAL_CHECKS:
-            case PH_NONTACTICAL_CHECKS_WIN:
-            case PH_NONTACTICAL_CHECKS_PURE:
-                genQChecks(pos, sort);
-                scoreNonCaptures(sort, si);
-                break;
-            default:
-                ASSERT(MoveGenPhase[sort->phase] == PH_END);
-                return NULL;
+        case PH_EVASION:
+            genEvasions(pos, sort);
+            if (sort->depth <= 0) scoreAllQ(sort, si);
+            else scoreAll(pos, sort, si);
+            break;
+        case PH_TRANS:
+            sort->size = 0;
+            if (sort->transmove != EMPTY) sort->list[sort->size++].m = sort->transmove;
+            break;
+        case PH_ALL_CAPTURES:
+        case PH_ALL_CAPTURES_PURE:
+            genCaptures(pos, sort);
+            scoreCapturesPure(sort);
+            break;
+        case PH_GOOD_CAPTURES:
+            sort->sizebad = 0;
+        case PH_GOOD_CAPTURES_PURE:
+            genCaptures(pos, sort);
+            scoreCapturesPure(sort);
+            break;
+        case PH_BAD_CAPTURES:
+            for (sort->size = 0; sort->size < sort->sizebad; sort->size++)
+                sort->list[sort->size] = sort->bad[sort->size];
+            break;
+        case PH_KILLER_MOVES:
+            sort->size = 0;
+            if (sort->killer1 != EMPTY) {
+                sort->list[sort->size].m = sort->killer1;
+                sort->list[sort->size].s = MAXHIST + 4;
+                sort->size++;
+            }
+            if (sort->killer2 != EMPTY) {
+                sort->list[sort->size].m = sort->killer2;
+                sort->list[sort->size].s = MAXHIST + 2;
+                sort->size++;
+            }
+            break;
+        case PH_QUIET_MOVES:
+            genNonCaptures(pos, sort);
+            scoreNonCaptures(sort, si);
+            break;
+        case PH_QUIET_PASSEDPAWNS_PURE:
+        case PH_QUIET_PASSEDPAWNS:
+            genPassedPawnMoves(pos, sort);
+            scoreNonCaptures(sort, si);
+            break;
+        case PH_NONTACTICAL_CHECKS:
+        case PH_NONTACTICAL_CHECKS_WIN:
+        case PH_NONTACTICAL_CHECKS_PURE:
+            genQChecks(pos, sort);
+            scoreNonCaptures(sort, si);
+            break;
+        default:
+            ASSERT(MoveGenPhase[sort->phase] == PH_END);
+            return NULL;
         }
     }
 }
@@ -325,7 +323,6 @@ void scoreRoot(sort_t *sort) {
     for (m = &sort->list[0]; m < &sort->list[sort->size]; m++) {
         if (m->m == sort->transmove) m->s = MAXHIST * 3;
         else if (moveIsTactical(m->m))  m->s = MAXHIST + (moveCapture(m->m) * 6) + movePromote(m->m) - movePiece(m->m);
-        else m-> s = 0;
+        else m->s = 0;
     }
 }
-

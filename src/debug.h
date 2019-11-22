@@ -32,7 +32,7 @@ int moveIsOk(int m) {
     if (prom < EMPTY || prom > QUEEN) x = FALSE;
 
     if (x == FALSE) Print(8, "from = %d, to = %d, pc = %d, capt = %d, prom = %d\n",
-                              from, to, pc, capt, prom);
+        from, to, pc, capt, prom);
     return x;
 }
 
@@ -81,7 +81,7 @@ void flipPosition(const position_t *pos, position_t *clone) {
     clone->color[BLACK] = EmptyBoardBB;
     clone->occupied = EmptyBoardBB;
 
-    clone->side = pos->side^1;
+    clone->side = pos->side ^ 1;
     clone->ply = pos->ply;
     clone->fifty = pos->fifty;
 
@@ -206,15 +206,15 @@ void flipPosition(const position_t *pos, position_t *clone) {
     clone->mat_summ[WHITE] =
         bitCnt(clone->pawns & clone->color[WHITE]) +            // 1
         bitCnt(clone->knights & clone->color[WHITE]) * 9 +        // 9
-        bitCnt(clone->bishops & clone->color[WHITE]) * 9*3 +      // 27
-        bitCnt(clone->rooks & clone->color[WHITE]) * 9*3*3 +    // 81
-        bitCnt(clone->queens & clone->color[WHITE]) * 9*3*3*3;   // 243
+        bitCnt(clone->bishops & clone->color[WHITE]) * 9 * 3 +      // 27
+        bitCnt(clone->rooks & clone->color[WHITE]) * 9 * 3 * 3 +    // 81
+        bitCnt(clone->queens & clone->color[WHITE]) * 9 * 3 * 3 * 3;   // 243
     clone->mat_summ[BLACK] =
         bitCnt(clone->pawns & clone->color[BLACK]) +            // 1
         bitCnt(clone->knights & clone->color[BLACK]) * 9 +        // 9
-        bitCnt(clone->bishops & clone->color[BLACK]) * 9*3 +      // 27
-        bitCnt(clone->rooks & clone->color[BLACK]) * 9*3*3 +    // 81
-        bitCnt(clone->queens & clone->color[BLACK]) * 9*3*3*3;   // 243
+        bitCnt(clone->bishops & clone->color[BLACK]) * 9 * 3 +      // 27
+        bitCnt(clone->rooks & clone->color[BLACK]) * 9 * 3 * 3 +    // 81
+        bitCnt(clone->queens & clone->color[BLACK]) * 9 * 3 * 3 * 3;   // 243
 }
 
 int evalSymmetryIsOk(const position_t *pos) {
@@ -263,10 +263,10 @@ void positionIsOk(const position_t *pos) {
     ASSERT(pos->pawn_table.table != NULL);
     ASSERT(pos->trans_table.table != NULL);
     ASSERT(pos->kings & pos->color[pos->side]);
-    ASSERT(pos->kings & pos->color[pos->side^1]);
+    ASSERT(pos->kings & pos->color[pos->side ^ 1]);
 
     open_score[WHITE] = open_score[BLACK] =
-                            end_score[WHITE] = end_score[BLACK] = 0;
+        end_score[WHITE] = end_score[BLACK] = 0;
     hash = pawnhash = 0;
     whitebits = pos->color[WHITE];
     blackbits = pos->color[BLACK];
@@ -401,9 +401,8 @@ void positionIsOk(const position_t *pos) {
     ASSERT(bitCnt(pos->pawns) <= 16);
     ASSERT(bitCnt(pos->kings) == 2);
     ASSERT((pos->color[WHITE] & pos->color[BLACK]) == 0);
-    ASSERT(pos->kings & pos->color[WHITE]& BitMask[pos->kpos[WHITE]]);
-    ASSERT(pos->kings & pos->color[BLACK]& BitMask[pos->kpos[BLACK]]);
+    ASSERT(pos->kings & pos->color[WHITE] & BitMask[pos->kpos[WHITE]]);
+    ASSERT(pos->kings & pos->color[BLACK] & BitMask[pos->kpos[BLACK]]);
     if (pos->epsq != -1)
         ASSERT(pos->epsq >= a3 && pos->epsq <= h6);
-
 }

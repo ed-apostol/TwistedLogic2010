@@ -61,59 +61,59 @@ void initPST(void) {
         for (j = 0; j < 64; j++) {
             switch (i) {
             case PAWN:
-                PST(WHITE,i,j,MIDGAME) += PawnFileMul[SQFILE(j)]*MidgamePawnFile;
-                PST(WHITE,i,j,ENDGAME) += PawnFileMul[SQFILE(j)]*EndgamePawnFile;
+                PST(WHITE, i, j, MIDGAME) += PawnFileMul[SQFILE(j)] * MidgamePawnFile;
+                PST(WHITE, i, j, ENDGAME) += PawnFileMul[SQFILE(j)] * EndgamePawnFile;
                 break;
             case KNIGHT:
-                PST(WHITE,i,j,MIDGAME) += KnightLineMul[SQFILE(j)]*MidgameKnightCentre;
-                PST(WHITE,i,j,MIDGAME) += KnightLineMul[SQRANK(j)]*MidgameKnightCentre;
-                PST(WHITE,i,j,MIDGAME) += KnightRankMul[SQRANK(j)]*MidgameKnightRank;
-                PST(WHITE,i,j,ENDGAME) += KnightLineMul[SQFILE(j)]*EndgameKnightCentre;
-                PST(WHITE,i,j,ENDGAME) += KnightLineMul[SQRANK(j)]*EndgameKnightCentre;
+                PST(WHITE, i, j, MIDGAME) += KnightLineMul[SQFILE(j)] * MidgameKnightCentre;
+                PST(WHITE, i, j, MIDGAME) += KnightLineMul[SQRANK(j)] * MidgameKnightCentre;
+                PST(WHITE, i, j, MIDGAME) += KnightRankMul[SQRANK(j)] * MidgameKnightRank;
+                PST(WHITE, i, j, ENDGAME) += KnightLineMul[SQFILE(j)] * EndgameKnightCentre;
+                PST(WHITE, i, j, ENDGAME) += KnightLineMul[SQRANK(j)] * EndgameKnightCentre;
                 break;
             case BISHOP:
-                PST(WHITE,i,j,MIDGAME) += BishopLineMul[SQFILE(j)]*MidgameBishopCentre;
-                PST(WHITE,i,j,ENDGAME) += BishopLineMul[SQFILE(j)]*EndgameBishopCentre;
-                PST(WHITE,i,j,MIDGAME) += BishopLineMul[SQRANK(j)]*MidgameBishopCentre;
-                PST(WHITE,i,j,ENDGAME) += BishopLineMul[SQRANK(j)]*EndgameBishopCentre;
+                PST(WHITE, i, j, MIDGAME) += BishopLineMul[SQFILE(j)] * MidgameBishopCentre;
+                PST(WHITE, i, j, ENDGAME) += BishopLineMul[SQFILE(j)] * EndgameBishopCentre;
+                PST(WHITE, i, j, MIDGAME) += BishopLineMul[SQRANK(j)] * MidgameBishopCentre;
+                PST(WHITE, i, j, ENDGAME) += BishopLineMul[SQRANK(j)] * EndgameBishopCentre;
                 break;
             case ROOK:
-                PST(WHITE,i,j,MIDGAME) += RookFileMul[SQFILE(j)]*MidgameRookFile;
+                PST(WHITE, i, j, MIDGAME) += RookFileMul[SQFILE(j)] * MidgameRookFile;
                 break;
             case QUEEN:
-                PST(WHITE,i,j,MIDGAME) += QueenLineMul[SQFILE(j)]*MidgameQueenCentre;
-                PST(WHITE,i,j,ENDGAME) += QueenLineMul[SQFILE(j)]*EndgameQueenCentre;
-                PST(WHITE,i,j,MIDGAME) += QueenLineMul[SQRANK(j)]*MidgameQueenCentre;
-                PST(WHITE,i,j,ENDGAME) += QueenLineMul[SQRANK(j)]*EndgameQueenCentre;
+                PST(WHITE, i, j, MIDGAME) += QueenLineMul[SQFILE(j)] * MidgameQueenCentre;
+                PST(WHITE, i, j, ENDGAME) += QueenLineMul[SQFILE(j)] * EndgameQueenCentre;
+                PST(WHITE, i, j, MIDGAME) += QueenLineMul[SQRANK(j)] * MidgameQueenCentre;
+                PST(WHITE, i, j, ENDGAME) += QueenLineMul[SQRANK(j)] * EndgameQueenCentre;
                 break;
             case KING:
-                PST(WHITE,i,j,MIDGAME) += KingFileMul[SQFILE(j)]*MidgameKingFile;
-                PST(WHITE,i,j,ENDGAME) += KingLineMul[SQFILE(j)]*EndgameKingCentre;
-                PST(WHITE,i,j,MIDGAME) += KingRankMul[SQRANK(j)]*MidgameKingRank;
-                PST(WHITE,i,j,ENDGAME) += KingLineMul[SQRANK(j)]*EndgameKingCentre;
+                PST(WHITE, i, j, MIDGAME) += KingFileMul[SQFILE(j)] * MidgameKingFile;
+                PST(WHITE, i, j, ENDGAME) += KingLineMul[SQFILE(j)] * EndgameKingCentre;
+                PST(WHITE, i, j, MIDGAME) += KingRankMul[SQRANK(j)] * MidgameKingRank;
+                PST(WHITE, i, j, ENDGAME) += KingLineMul[SQRANK(j)] * EndgameKingCentre;
                 break;
             }
         }
     }
 
-    PST(WHITE,KNIGHT,a8,MIDGAME) -= KnightTrapped;
-    PST(WHITE,KNIGHT,h8,MIDGAME) -= KnightTrapped;
+    PST(WHITE, KNIGHT, a8, MIDGAME) -= KnightTrapped;
+    PST(WHITE, KNIGHT, h8, MIDGAME) -= KnightTrapped;
 
-    for (i = a1; i <= h1; i++) PST(WHITE,BISHOP,i,MIDGAME) -= MidgameBishopBackRank;
-    for (i = a1; i <= h1; i++) PST(WHITE,QUEEN,i,MIDGAME) -= MidgameQueenBackRank;
+    for (i = a1; i <= h1; i++) PST(WHITE, BISHOP, i, MIDGAME) -= MidgameBishopBackRank;
+    for (i = a1; i <= h1; i++) PST(WHITE, QUEEN, i, MIDGAME) -= MidgameQueenBackRank;
 
     for (i = 0; i < 8; i++) {
-        j = (i*8) + i;
-        PST(WHITE,BISHOP,j,MIDGAME) += MidgameBishopDiagonal;
-        j = ((7-i)*8) + i;
-        PST(WHITE,BISHOP,j,MIDGAME) += MidgameBishopDiagonal;
+        j = (i * 8) + i;
+        PST(WHITE, BISHOP, j, MIDGAME) += MidgameBishopDiagonal;
+        j = ((7 - i) * 8) + i;
+        PST(WHITE, BISHOP, j, MIDGAME) += MidgameBishopDiagonal;
     }
 
     for (i = 0; i < 8; i++) {
         for (j = 0; j < 64; j++) {
             k = ((7 - SQRANK(j)) * 8) + SQFILE(j);
-            PST(BLACK,i,k,MIDGAME) = PST(WHITE,i,j,MIDGAME);
-            PST(BLACK,i,k,ENDGAME) = PST(WHITE,i,j,ENDGAME);
+            PST(BLACK, i, k, MIDGAME) = PST(WHITE, i, j, MIDGAME);
+            PST(BLACK, i, k, ENDGAME) = PST(WHITE, i, j, ENDGAME);
         }
     }
 
@@ -127,14 +127,14 @@ void initPST(void) {
 /* this initializes the pseudo-constant variables used in the program */
 void initArr(void) {
     int i, j, m, k, n;
-    const int kingd[] = {-9, -1, 7, 8, 9, 1, -7, -8};
-    const int knightd[] = {-17, -10, 6, 15, 17, 10, -6, -15};
-    const int wpawnd[] = {8};
-    const int bpawnd[] = {-8};
-    const int wpawnc[] = {7, 9};
-    const int bpawnc[] = {-7, -9};
-    const int wpawn2mov[] = {16};
-    const int bpawn2mov[] = {-16};
+    const int kingd[] = { -9, -1, 7, 8, 9, 1, -7, -8 };
+    const int knightd[] = { -17, -10, 6, 15, 17, 10, -6, -15 };
+    const int wpawnd[] = { 8 };
+    const int bpawnd[] = { -8 };
+    const int wpawnc[] = { 7, 9 };
+    const int bpawnc[] = { -7, -9 };
+    const int wpawn2mov[] = { 16 };
+    const int bpawn2mov[] = { -16 };
 
     memset(KnightMoves, 0, sizeof(KnightMoves));
     memset(KingMoves, 0, sizeof(KingMoves));
@@ -196,7 +196,7 @@ void initArr(void) {
         }
         for (j = 0; j < 2; j++) {
             n = i + wpawnc[j];
-            if (n < 64 && n >=0 && abs(((n & 7) - (i & 7))) <= 2)
+            if (n < 64 && n >= 0 && abs(((n & 7) - (i & 7))) <= 2)
                 PawnCaps[i][WHITE] |= BitMask[n];
         }
         for (j = 0; j < 2; j++) {
@@ -219,10 +219,10 @@ void initArr(void) {
     for (i = 0; i < 64; i++) {
         for (k = 0; k < 8; k++) {
             DirA[k][i] = 0;
-            for (m = -1, j = i ;;) {
+            for (m = -1, j = i;;) {
                 n = j + kingd[k];
                 if (n < 0 || n > 63 || (j % 8 == 0 && n % 8 == 7)
-                        || (j % 8 == 7 && n % 8 == 0))
+                    || (j % 8 == 7 && n % 8 == 0))
                     break;
                 Direction[i][n] = kingd[k];
                 DirA[k][i] |= BitMask[n];
@@ -252,8 +252,8 @@ void initArr(void) {
         PassedMask[1][i] = fillDown2(b);
     }
     for (i = 0; i < 3; i++) {
-        int wksq[3] = {b1, e1, g1};
-        int bksq[3] = {b8, e8, g8};
+        int wksq[3] = { b1, e1, g1 };
+        int bksq[3] = { b8, e8, g8 };
         uint64 b1, b2, b3;
         b1 = b2 = b3 = 0;
         b1 |= BitMask[wksq[i] + 7];

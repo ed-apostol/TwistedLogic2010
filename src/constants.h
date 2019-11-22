@@ -46,7 +46,7 @@ static const int RookValue = 500;
 static const int QueenValue = 975;
 static const int KingValue = 10000;
 static const int BishopPairBonus = 50;
-static const int PcValSEE[] = {0, 100, 325, 325, 500, 975, 10000};
+static const int PcValSEE[] = { 0, 100, 325, 325, 500, 975, 10000 };
 
 static const int FileA = 0;
 static const int FileB = 1;
@@ -67,14 +67,14 @@ static const int Rank7 = 6;
 static const int Rank8 = 7;
 
 /* used in symmetric evaluation */
-static const uint64 Rank2ByColorBB[2] = {0x000000000000FF00ULL, 0x00FF000000000000ULL};
-static const uint64 Rank4ByColorBB[2] = {0x00000000FF000000ULL, 0x000000FF00000000ULL};
-static const uint64 Rank7ByColorBB[2] = {0x00FF000000000000ULL, 0x000000000000FF00ULL};
-static const uint64 Rank8ByColorBB[2] = {0xFF00000000000000ULL, 0x00000000000000FFULL};
-static const int KingAtkPhaseMaskByColor[2] = {2, 4};
+static const uint64 Rank2ByColorBB[2] = { 0x000000000000FF00ULL, 0x00FF000000000000ULL };
+static const uint64 Rank4ByColorBB[2] = { 0x00000000FF000000ULL, 0x000000FF00000000ULL };
+static const uint64 Rank7ByColorBB[2] = { 0x00FF000000000000ULL, 0x000000000000FF00ULL };
+static const uint64 Rank8ByColorBB[2] = { 0xFF00000000000000ULL, 0x00000000000000FFULL };
+static const int KingAtkPhaseMaskByColor[2] = { 2, 4 };
 
 // used in material calculation
-static const int MatSummValue[8] = {0,1,9,27,81,243,0,0};
+static const int MatSummValue[8] = { 0,1,9,27,81,243,0,0 };
 
 // used in setting up the position and eval symmetry
 static const char *FenString[] = {
@@ -88,9 +88,9 @@ static const char *FenString[] = {
 };
 
 /* used in fill algorithms */
-static uint64 (*FillPtr[])(uint64) = {&fillUp, &fillDown};
-static uint64 (*FillPtr2[])(uint64) = {&fillUp2, &fillDown2};
-static uint64 (*ShiftPtr[])(uint64, uint32) = {&shiftLeft, &shiftRight};
+static uint64(*FillPtr[])(uint64) = { &fillUp, &fillDown };
+static uint64(*FillPtr2[])(uint64) = { &fillUp2, &fillDown2 };
+static uint64(*ShiftPtr[])(uint64, uint32) = { &shiftLeft, &shiftRight };
 
 // used in pawn shelter and storm eval
 static const int FileWing[64] = {
@@ -163,7 +163,7 @@ static unsigned char cm[] = {
 };
 
 /* the following constants are used by the magic bitboard attacks */
-static const uint64 DiagonalMask[64]= {
+static const uint64 DiagonalMask[64] = {
     0x8040201008040201ULL, 0x0080402010080402ULL, 0x0000804020100804ULL, 0x0000008040201008ULL,
     0x0000000080402010ULL, 0x0000000000804020ULL, 0x0000000000008040ULL, 0x0000000000000080ULL,
     0x4020100804020100ULL, 0x8040201008040201ULL, 0x0080402010080402ULL, 0x0000804020100804ULL,
@@ -182,7 +182,7 @@ static const uint64 DiagonalMask[64]= {
     0x1008040201000000ULL, 0x2010080402010000ULL, 0x4020100804020100ULL, 0x8040201008040201ULL
 };
 
-static const uint64 AntiDiagMask[64]= {
+static const uint64 AntiDiagMask[64] = {
     0x0000000000000001ULL, 0x0000000000000102ULL, 0x0000000000010204ULL, 0x0000000001020408ULL,
     0x0000000102040810ULL, 0x0000010204081020ULL, 0x0001020408102040ULL, 0x0102040810204080ULL,
     0x0000000000000102ULL, 0x0000000000010204ULL, 0x0000000001020408ULL, 0x0000000102040810ULL,
@@ -330,7 +330,7 @@ static const uint64 WeakSqEnemyHalfBB[2] = {
 };
 
 static const uint64 EmptyBoardBB = 0ULL;
-static const uint64 FullBoardBB  = 0xFFFFFFFFFFFFFFFFULL;
+static const uint64 FullBoardBB = 0xFFFFFFFFFFFFFFFFULL;
 
 static const uint64 WhiteSquaresBB = 0x55AA55AA55AA55AAULL;
 static const uint64 BlackSquaresBB = 0xAA55AA55AA55AA55ULL;
